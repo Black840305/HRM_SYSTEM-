@@ -1,0 +1,247 @@
+[
+  {
+    "_id": {
+      "$oid": "67d2587f9fb0ac9dca216273"
+    },
+    "user": {
+      "$oid": "67d2584e9fb0ac9dca216270"
+    },
+    "name": "John Doe",
+    "dob": {
+      "$date": "1990-01-01T00:00:00.000Z"
+    },
+    "gender": "Male",
+    "address": "123 Main St, Anytown, USA",
+    "phone": "0123456789",
+    "department": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8da"
+    },
+    "position": "Kỹ Sư Phần Mềm",
+    "salary": {
+      "$oid": "67d84fe93eb680c4d809f242"
+    },
+    "startDate": {
+      "$date": "2021-01-01T00:00:00.000Z"
+    },
+    "avatar": "uploads\\avatars\\avatar-1742262041408-809347929.jpg",
+    "updatedAt": {
+      "$date": "2025-03-19T03:24:28.517Z"
+    },
+    "LeaveBalance": {
+      "annual": 12,
+      "sick": 10,
+      "unpaid": 0
+    },
+    "status": "active",
+    "workHours": {
+      "start": "08:00",
+      "end": "17:00"
+    },
+    "workSchedule": "full-time",
+    "leaveBalance": {
+      "annual": 12,
+      "sick": 10,
+      "unpaid": 0
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d40b9eaf5f1ec4f2be230c"
+    },
+    "user": {
+      "$oid": "67d40af7af5f1ec4f2be2307"
+    },
+    "name": "KHANH1",
+    "dob": {
+      "$date": "2002-12-31T17:00:00.000Z"
+    },
+    "gender": "Male",
+    "address": "Vietnam, Hanoi",
+    "phone": "123-456-7890",
+    "department": {
+      "$oid": "67d40be2af5f1ec4f2be230f"
+    },
+    "position": "ADMIN",
+    "salary": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8d2"
+    },
+    "startDate": {
+      "$date": "2021-01-01T00:00:00.000Z"
+    },
+    "avatar": "https://th.bing.com/th/id/OIP.QhoqCMcJ9l2ZgMt0enuWGAHaFj?w=249&h=187&c=7&r=0&o=5&dpr=1.3&pid=1.7"
+  },
+  {
+    "_id": {
+      "$oid": "67d59ba83eb680c4d809f180"
+    },
+    "user": {
+      "$oid": "67d59b4f3eb680c4d809f17c"
+    },
+    "name": "Khanh Hoa",
+    "dob": {
+      "$date": "1989-12-31T00:00:00.000Z"
+    },
+    "gender": "Male",
+    "address": "123 Main St, Anytown, USA",
+    "phone": "0123456789",
+    "department": {
+      "$oid": "67d4fe1d3eb680c4d809f126"
+    },
+    "position": "UI/UX Design",
+    "salary": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8d2"
+    },
+    "startDate": {
+      "$date": "2021-01-01T00:00:00.000Z"
+    },
+    "avatar": "uploads\\avatars\\avatar-1742053692612-7978871.jpg",
+    "updatedAt": {
+      "$date": "2025-03-18T02:01:51.933Z"
+    },
+    "workSchedule": "full-time",
+    "workHours": {
+      "start": "08:00",
+      "end": "17:00"
+    },
+    "LeaveBalance": {
+      "annual:": 12,
+      "sick": 10,
+      "unpaid:": 0
+    },
+    "status ": "active",
+    "leaveBalance": {
+      "annual": 12,
+      "sick": 10,
+      "unpaid": 0
+    },
+    "status": "active"
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8f1"
+    },
+    "user": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8e2"
+    },
+    "name": "Nguyễn Văn A",
+    "dob": {
+      "$date": "1990-05-15T00:00:00.000Z"
+    },
+    "gender": "Nam",
+    "address": "123 Đường Lê Lợi, Quận 1, TP.HCM",
+    "phone": "0901234567",
+    "department": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8d9"
+    },
+    "position": "Trưởng phòng",
+    "salary": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8d3"
+    },
+    "startDate": {
+      "$date": "2020-01-15T00:00:00.000Z"
+    },
+    "avatar": "/uploads/avatars/avatar1.jpg",
+    "workSchedule": "full-time",
+    "workHours": {
+      "start": "08:00",
+      "end": "17:00"
+    },
+    "leaveBalance": {
+      "annual": 12,
+      "sick": 10,
+      "unpaid": 0
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8f2"
+    },
+    "user": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8e3"
+    },
+    "name": "Trần Thị B",
+    "dob": {
+      "$date": "1992-08-20T00:00:00.000Z"
+    },
+    "gender": "Nữ",
+    "address": "456 Đường Nguyễn Huệ, Quận 1, TP.HCM",
+    "phone": "0912345678",
+    "email": "tran.thi.b@example.com",
+    "department": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8da"
+    },
+    "position": "Kỹ sư phần mềm",
+    "salary": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8d2"
+    },
+    "startDate": {
+      "$date": "2021-03-10T00:00:00.000Z"
+    },
+    "avatar": "/uploads/avatars/avatar2.jpg",
+    "workSchedule": "full-time",
+    "workHours": {
+      "start": "08:00",
+      "end": "17:00"
+    },
+    "leaveBalance": {
+      "annual": 12,
+      "sick": 10,
+      "unpaid": 0
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d9590fd75fadd7116f7c21"
+    },
+    "user": {
+      "$oid": "67d9590fd75fadd7116f7c1e"
+    },
+    "name": "Nguyễn Xuân Khánh",
+    "dob": {
+      "$date": "2025-03-18T00:00:00.000Z"
+    },
+    "gender": "male",
+    "address": "186 Phố Hồng Mai Quận Hai Bà Trưng",
+    "phone": "0356129119",
+    "department": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8da"
+    },
+    "position": "Kỹ Sư Phần Mềm",
+    "startDate": {
+      "$date": "2025-03-18T00:00:00.000Z"
+    },
+    "avatar": "uploads\\avatars\\avatar-1742297359044-798844962.jpg",
+    "workSchedule": "full-time",
+    "workHours": {
+      "start": "08:00",
+      "end": "17:00"
+    },
+    "leaveBalance": {
+      "annual": 12,
+      "sick": 10,
+      "unpaid": 0
+    },
+    "status": "active",
+    "createdAt": {
+      "$date": "2025-03-18T11:29:19.186Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-18T11:29:19.186Z"
+    },
+    "__v": 0
+  }
+]

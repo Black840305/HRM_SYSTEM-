@@ -1,0 +1,199 @@
+[
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8d2"
+    },
+    "employee": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8f2"
+    },
+    "month": 3,
+    "year": 2024,
+    "baseSalary": 20000000,
+    "allowances": [
+      {
+        "type": "Phụ cấp ăn trưa",
+        "amount": 1000000,
+        "description": "Phụ cấp ăn trưa hàng tháng"
+      },
+      {
+        "type": "Phụ cấp đi lại",
+        "amount": 500000,
+        "description": "Phụ cấp đi lại hàng tháng"
+      }
+    ],
+    "bonuses": [
+      {
+        "type": "Thưởng dự án",
+        "amount": 2000000,
+        "description": "Thưởng hoàn thành dự án đúng hạn"
+      }
+    ],
+    "deductions": [
+      {
+        "type": "Bảo hiểm xã hội",
+        "amount": 1000000,
+        "description": "Khấu trừ BHXH 5%"
+      },
+      {
+        "type": "Thuế thu nhập cá nhân",
+        "amount": 800000,
+        "description": "Thuế TNCN"
+      }
+    ],
+    "workingDays": 21,
+    "leaveDays": 1,
+    "absentDays": 0,
+    "overtimeHours": 0.5,
+    "overtimeAmount": 120000,
+    "totalAmount": 21820000,
+    "status": "paid",
+    "paymentDate": {
+      "$date": "2024-04-05T00:00:00.000Z"
+    },
+    "paymentMethod": "bank",
+    "bankInfo": {
+      "bankName": "Techcombank",
+      "accountNumber": "0987654321",
+      "accountName": "Trần Thị B"
+    },
+    "createdAt": {
+      "$date": "2024-03-31T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-04-05T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8d3"
+    },
+    "employee": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8f1"
+    },
+    "month": 3,
+    "year": 2024,
+    "baseSalary": 25000000,
+    "allowances": [
+      {
+        "type": "Phụ cấp ăn trưa",
+        "amount": 1000000,
+        "description": "Phụ cấp ăn trưa hàng tháng"
+      },
+      {
+        "type": "Phụ cấp đi lại",
+        "amount": 1000000,
+        "description": "Phụ cấp đi lại hàng tháng"
+      },
+      {
+        "type": "Phụ cấp chức vụ",
+        "amount": 2000000,
+        "description": "Phụ cấp cho vị trí Trưởng phòng"
+      }
+    ],
+    "bonuses": [
+      {
+        "type": "Thưởng quản lý",
+        "amount": 3000000,
+        "description": "Thưởng quản lý hiệu quả"
+      }
+    ],
+    "deductions": [
+      {
+        "type": "Bảo hiểm xã hội",
+        "amount": 1250000,
+        "description": "Khấu trừ BHXH 5%"
+      },
+      {
+        "type": "Thuế thu nhập cá nhân",
+        "amount": 1500000,
+        "description": "Thuế TNCN"
+      }
+    ],
+    "workingDays": 20,
+    "leaveDays": 2,
+    "absentDays": 0,
+    "overtimeHours": 0,
+    "overtimeAmount": 0,
+    "totalAmount": 29250000,
+    "status": "paid",
+    "paymentDate": {
+      "$date": "2024-04-05T00:00:00.000Z"
+    },
+    "paymentMethod": "bank",
+    "bankInfo": {
+      "bankName": "BIDV",
+      "accountNumber": "2468013579",
+      "accountName": "Nguyễn Văn A"
+    },
+    "createdAt": {
+      "$date": "2024-03-31T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-04-05T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d84fe93eb680c4d809f242"
+    },
+    "employee": {
+      "$oid": "67d2587f9fb0ac9dca216273"
+    },
+    "month": 4,
+    "year": 2023,
+    "baseSalary": 18000000,
+    "allowances": [
+      {
+        "type": "Phụ cấp ăn trưa",
+        "amount": 800000,
+        "description": "Phụ cấp ăn trưa hàng tháng"
+      },
+      {
+        "type": "Phụ cấp đi lại",
+        "amount": 400000,
+        "description": "Phụ cấp đi lại hàng tháng"
+      }
+    ],
+    "bonuses": [
+      {
+        "type": "Thưởng dự án",
+        "amount": 1500000,
+        "description": "Thưởng hoàn thành dự án đúng hạn"
+      }
+    ],
+    "deductions": [
+      {
+        "type": "Bảo hiểm xã hội",
+        "amount": 900000,
+        "description": "Khấu trừ BHXH 5%"
+      },
+      {
+        "type": "Thuế thu nhập cá nhân",
+        "amount": 700000,
+        "description": "Thuế TNCN"
+      }
+    ],
+    "workingDays": 22,
+    "leaveDays": 2,
+    "absentDays": 0,
+    "overtimeHours": 0,
+    "overtimeAmount": 0,
+    "totalAmount": 18600000,
+    "status": "paid",
+    "paymentDate": {
+      "$date": "2023-05-05T00:00:00.000Z"
+    },
+    "paymentMethod": "bank",
+    "bankInfo": {
+      "bankName": "Vietcombank",
+      "accountNumber": "0123456789",
+      "accountName": "Nguyễn Văn A"
+    },
+    "createdAt": {
+      "$date": "2024-04-30T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2025-03-18T01:46:29.262Z"
+    }
+  }
+]

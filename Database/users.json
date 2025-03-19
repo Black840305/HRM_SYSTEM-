@@ -1,0 +1,68 @@
+[
+  {
+    "_id": {
+      "$oid": "67d40af7af5f1ec4f2be2307"
+    },
+    "username": "KHANH",
+    "email": "admin@gmail.com",
+    "password": "123",
+    "role": "admin",
+    "employeeId": {
+      "$oid": "67d40b9eaf5f1ec4f2be230c"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d2584e9fb0ac9dca216270"
+    },
+    "username": "john doe",
+    "email": "JohnDoe@gmail.com",
+    "password": "123",
+    "role": "employee",
+    "employeeId": {
+      "$oid": "67d2587f9fb0ac9dca216273"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d59b4f3eb680c4d809f17c"
+    },
+    "username": "Khanh Hoa",
+    "email": "Hoa123@gmail.com",
+    "password": "123",
+    "role": "employee",
+    "employeeId": {
+      "$oid": "67d59ba83eb680c4d809f180"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8e1"
+    },
+    "email": "admin@example.com",
+    "password": "$2a$10$rIU6L4.1iE5XEB/EgZ8Qp.TqMkHNOW3I8HzVw.CYmxRLHQOiDCOPC",
+    "role": "admin"
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8e2"
+    },
+    "email": "nguyen.van.a@example.com",
+    "password": "$2a$10$rIU6L4.1iE5XEB/EgZ8Qp.TqMkHNOW3I8HzVw.CYmxRLHQOiDCOPC",
+    "role": "employee",
+    "employeeId": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8f1"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8e3"
+    },
+    "email": "tran.thi.b@example.com",
+    "password": "$2a$10$rIU6L4.1iE5XEB/EgZ8Qp.TqMkHNOW3I8HzVw.CYmxRLHQOiDCOPC",
+    "role": "employee",
+    "employeeId": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8f2"
+    }
+  }
+]

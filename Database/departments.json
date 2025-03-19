@@ -1,0 +1,65 @@
+[
+  {
+    "_id": {
+      "$oid": "67d258c79fb0ac9dca216276"
+    },
+    "name": "Engineering",
+    "description": "Handles all engineering like coding,testing,... tasks,....",
+    "updatedAt": {
+      "$date": "2025-03-18T07:13:43.366Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d40be2af5f1ec4f2be230f"
+    },
+    "name": "HRM System Control",
+    "description": "Employee Management"
+  },
+  {
+    "_id": {
+      "$oid": "67d4fe1d3eb680c4d809f126"
+    },
+    "name": "Phòng Thiết Kế Đồ Họa",
+    "description": "Xứ Lý Đồ Họa và Thiết kế Mô Hình"
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8d9"
+    },
+    "name": "Phòng Nhân sự",
+    "description": "Quản lý nhân sự và tuyển dụng",
+    "createdAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8da"
+    },
+    "name": "Phòng Kỹ thuật",
+    "description": "Phát triển sản phẩm và dịch vụ kỹ thuật",
+    "createdAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8db"
+    },
+    "name": "Phòng Kinh doanh",
+    "description": "Quản lý kinh doanh và bán hàng",
+    "createdAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-03-01T00:00:00.000Z"
+    }
+  }
+]

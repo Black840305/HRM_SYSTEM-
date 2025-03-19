@@ -1,0 +1,50 @@
+[
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c961"
+    },
+    "title": "Báo cáo hiệu suất nhân viên tháng 2/2024",
+    "content": "Báo cáo chi tiết về hiệu suất làm việc của nhân viên trong tháng 2/2024, bao gồm các chỉ số KPI, tỷ lệ hoàn thành công việc và đánh giá từ quản lý trực tiếp.",
+    "createdBy": {
+      "$oid": "67d2587f9fb0ac9dca216273"
+    },
+    "createdAt": {
+      "$date": "2024-03-05T14:30:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-03-05T14:30:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c962"
+    },
+    "title": "Báo cáo tình hình nghỉ phép quý 1/2024",
+    "content": "Báo cáo tổng hợp tình hình nghỉ phép của nhân viên trong quý 1/2024, phân tích theo phòng ban, loại nghỉ phép và so sánh với cùng kỳ năm trước.",
+    "createdBy": {
+      "$oid": "67d2587f9fb0ac9dca216273"
+    },
+    "createdAt": {
+      "$date": "2024-03-10T16:45:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-03-10T16:45:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c963"
+    },
+    "title": "Báo cáo tổng hợp chấm công tháng 2/2024",
+    "content": "Báo cáo chi tiết về tình hình chấm công của nhân viên trong tháng 2/2024, bao gồm số ngày làm việc, nghỉ phép, đi muộn, về sớm và làm thêm giờ.",
+    "createdBy": {
+      "$oid": "67d2587f9fb0ac9dca216273"
+    },
+    "createdAt": {
+      "$date": "2024-03-03T11:20:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2024-03-03T11:20:00.000Z"
+    }
+  }
+]
