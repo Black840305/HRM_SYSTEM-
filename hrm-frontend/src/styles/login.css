@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Background Styling */
+.login_bg {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('../images/background_login.jpg') no-repeat center center/cover;
+    position: relative;
+}
+
+/* Adding Dark Overlay for Better Text Visibility */
+.login_bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    z-index: 0;
+}
+
+/* Wrapper Styling */
+.wrapper {
+    width: 500px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    padding: 30px 30px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+/* Header */
+.wrapper h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #fff;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Form Styling */
+.wrapper form {
+    padding: 10px 10px;
+}
+
+/* Form Group Styling */
+.formGroup {
+    position: relative;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.formGroup input {
+    width: 100%;
+    height: 50px;
+    padding: 12px 45px 12px 15px; /* Space for icon */
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    outline: none;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.formGroup input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.formGroup input:focus {
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Input Icon */
+.formGroup .icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 18px;
+}
+
+/* Remember Me & Forgot Password */
+.remember {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-top: -10px;
+    color: #f0f2f5;
+}
+
+/* Checkbox Custom Styling */
+.remember label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #f0f2f5;
+    cursor: pointer;
+}
+
+.remember input {
+    margin-right: 5px;
+    accent-color: white;
+}
+
+.remember a {
+    text-decoration: none;
+    color: #f0f2f5;
+    transition: 0.3s;
+}
+
+.remember a:hover {
+    text-decoration: underline;
+}
+
+/* Submit Button */
+.formButton {
+    width: 100%;
+    height: 50px;
+    border: none;
+    outline: none;
+    border-radius: 25px;
+    background-color: #f0f2f5;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: #333;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+
+.formButton:hover {
+    background-color: #333;
+    color: #f0f2f5;
+}
+
+/* Register Section */
+.register {
+    font-size: 15px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.register p a {
+    text-decoration: none;
+    color: #f0f2f5;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.register p a:hover {
+    text-decoration: underline;
+}
+
+/* Forgot Password Fix */
+.forgot {
+    margin: 0;
+}
+
+/* Error Message Styling */
+.message {
+    color: red;
+    background-color: rgba(255, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 600px) {
+    .wrapper {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .formGroup input {
+        padding: 12px 40px 12px 15px;
+    }
+
+    .formGroup .icon {
+        right: 10px;
+        font-size: 16px;
+    }
+}

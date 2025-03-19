@@ -1,0 +1,58 @@
+.add-employee-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .add-employee-container h2 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .add-employee-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .add-employee-container input,
+  .add-employee-container select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  .add-employee-container input:focus,
+  .add-employee-container select:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .add-employee-container button {
+    background: #007bff;
+    color: #fff;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.3s;
+  }
+  
+  .add-employee-container button:hover {
+    background: #0056b3;
+  }
+  
+  @media (max-width: 600px) {
+    .add-employee-container {
+      width: 90%;
+    }
+  }
+  
