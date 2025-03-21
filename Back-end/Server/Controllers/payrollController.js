@@ -48,43 +48,61 @@ exports.getAllPayrolls = async (req, res) => {
 
 exports.getPayrollById = async (req, res) => {
   try {
-    // Tìm bản ghi lương theo ID, populate dữ liệu nhân viên
-    const payroll = await Payroll.findById(req.params.id).populate(
-      "employee",
-      "name department"
-    );
+    // Find payroll record by ID and populate employee data
+    const payroll = await Payroll.findById(req.params.id).populate({
+      path: "employee",
+      select: "name department position baseSalary",
+    });
 
-    const result = payroll.map((p) => ({
-      _id: p._id,
+    if (!payroll) {
+      return res.status(404).json({ message: "Payroll record not found" });
+    }
+
+    // Transform the payroll object into the desired format
+    const result = {
+      _id: payroll._id,
       employee: {
-        _id: p.employee._id,
-        name: p.employee.name || "Chưa cập nhật",
-        department: p.employee.department || "Chưa cập nhật",
-        baseSalary: p.employee.baseSalary || 0,
+        _id: payroll.employee._id,
+        name: payroll.employee.name || "Chưa cập nhật",
+        department: payroll.employee.department || "Chưa cập nhật",
+        position: payroll.employee.position || "Chưa cập nhật",
+        baseSalary: payroll.employee.baseSalary || 0,
       },
-      month: p.month,
-      year: p.year,
-      baseSalary: p.baseSalary,
-      allowances: p.allowances,
-      bonuses: p.bonuses,
-      deductions: p.deductions,
-      workingDays: p.workingDays,
-      leaveDays: p.leaveDays,
-      absentDays: p.absentDays,
-      overtimeHours: p.overtimeHours,
-      overtimeAmount: p.overtimeAmount,
-      totalAmount: p.totalAmount,
-      status: p.status,
-      paymentDate: p.paymentDate
-        ? p.paymentDate.toISOString().split("T")[0]
+      month: payroll.month,
+      year: payroll.year,
+      baseSalary: payroll.baseSalary,
+      allowances: payroll.allowances,
+      bonuses: payroll.bonuses,
+      deductions: payroll.deductions,
+      workingDays: payroll.workingDays,
+      leaveDays: payroll.leaveDays,
+      absentDays: payroll.absentDays,
+      overtimeHours: payroll.overtimeHours,
+      overtimeAmount: payroll.overtimeAmount,
+      totalAmount: payroll.totalAmount,
+      status: payroll.status,
+      paymentDate: payroll.paymentDate
+        ? payroll.paymentDate.toISOString().split("T")[0]
         : "Chưa cập nhật",
-      paymentMethod: p.paymentMethod,
-      bankInfo: p.bankInfo,
-      note: p.note,
-    }));
+      paymentMethod: payroll.paymentMethod,
+      bankInfo: payroll.bankInfo,
+      note: payroll.note,
+    };
+
+    // Return the formatted payroll record
     res.json(result);
   } catch (err) {
-    res.status(500).json({ msg: "Server error" });
+    console.error("Error fetching payroll:", err);
+
+    // Handle invalid ID format error
+    if (err.kind === "ObjectId") {
+      return res.status(400).json({ message: "Invalid payroll ID format" });
+    }
+
+    res.status(500).json({
+      message: "Server error while fetching payroll data",
+      error: err.message,
+    });
   }
 };
 
@@ -113,107 +131,37 @@ exports.createPayroll = async (req, res) => {
 };
 
 exports.updatePayroll = async (req, res) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
-    const {
-      baseSalary,
-      allowances,
-      bonuses,
-      deductions,
-      workingDays,
-      leaveDays,
-      absentDays,
-      overtimeHours,
-      overtimeAmount,
-      status,
-      paymentDate,
-      paymentMethod,
-      bankInfo,
-      effectiveDate,
-      note,
-    } = req.body;
+    const { id } = req.params;
 
-    // Tìm bản ghi lương theo ID
-    const payroll = await Payroll.findById(req.params.id).session(session);
-    if (!payroll) {
-      await session.abortTransaction();
-      session.endSession();
+    // Log để debug
+    console.log("Cập nhật payroll ID:", id);
+    console.log("Dữ liệu nhận được:", req.body);
+
+    // Kiểm tra ID hợp lệ
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "ID không hợp lệ" });
+    }
+
+    // Tìm và cập nhật
+    const updatedPayroll = await Payroll.findByIdAndUpdate(
+      id,
+      { ...req.body },
+      { new: true, runValidators: true }
+    );
+
+    // Kiểm tra kết quả
+    if (!updatedPayroll) {
       return res.status(404).json({ message: "Không tìm thấy bản ghi lương" });
     }
 
-    // Cập nhật thông tin lương
-    if (baseSalary !== undefined) payroll.baseSalary = baseSalary;
-    if (allowances !== undefined) payroll.allowances = allowances;
-    if (bonuses !== undefined) payroll.bonuses = bonuses;
-    if (deductions !== undefined) payroll.deductions = deductions;
-    if (workingDays !== undefined) payroll.workingDays = workingDays;
-    if (leaveDays !== undefined) payroll.leaveDays = leaveDays;
-    if (absentDays !== undefined) payroll.absentDays = absentDays;
-    if (overtimeHours !== undefined) payroll.overtimeHours = overtimeHours;
-    if (overtimeAmount !== undefined) payroll.overtimeAmount = overtimeAmount;
-    if (status !== undefined) payroll.status = status;
-    if (paymentDate !== undefined) payroll.paymentDate = paymentDate;
-    if (paymentMethod !== undefined) payroll.paymentMethod = paymentMethod;
-    if (bankInfo !== undefined) payroll.bankInfo = bankInfo;
-    if (effectiveDate !== undefined) payroll.effectiveDate = effectiveDate;
-    if (note !== undefined) payroll.note = note;
-
-    // Tính lại tổng lương
-    const allowancesTotal = payroll.allowances.reduce(
-      (sum, item) => sum + (item.amount || 0),
-      0
-    );
-    const bonusesTotal = payroll.bonuses.reduce(
-      (sum, item) => sum + (item.amount || 0),
-      0
-    );
-    const deductionsTotal = payroll.deductions.reduce(
-      (sum, item) => sum + (item.amount || 0),
-      0
-    );
-    payroll.totalAmount =
-      payroll.baseSalary +
-      allowancesTotal +
-      bonusesTotal -
-      deductionsTotal +
-      payroll.overtimeAmount;
-
-    // Lưu thay đổi
-    await payroll.save({ session });
-
-    // Cập nhật thông tin lương trong hồ sơ nhân viên nếu cần
-    if (
-      baseSalary !== undefined ||
-      allowances !== undefined ||
-      bonuses !== undefined ||
-      deductions !== undefined
-    ) {
-      const employee = await Employee.findById(payroll.employee).session(
-        session
-      );
-      if (employee) {
-        if (baseSalary !== undefined) employee.salary = baseSalary;
-        if (allowances !== undefined) employee.allowances = allowances;
-        if (bonuses !== undefined) employee.bonuses = bonuses;
-        if (deductions !== undefined) employee.deductions = deductions;
-        employee.salaryUpdatedAt = new Date();
-        await employee.save({ session });
-      }
-    }
-
-    await session.commitTransaction();
-    session.endSession();
-
-    // Trả về bản ghi lương đã cập nhật với thông tin nhân viên
-    await payroll.populate("employee", "name department position");
-    res.json(payroll);
-  } catch (err) {
-    await session.abortTransaction();
-    session.endSession();
-    console.error("Error updating payroll:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
+    res.status(200).json(updatedPayroll);
+  } catch (error) {
+    console.error("Lỗi cập nhật lương:", error);
+    res.status(500).json({
+      message: "Lỗi cập nhật lương",
+      error: error.message,
+    });
   }
 };
 
@@ -228,5 +176,165 @@ exports.deletePayroll = async (req, res) => {
     res.json({ msg: "Payroll removed" });
   } catch (err) {
     res.status(500).json({ msg: "Server error" });
+  }
+};
+
+// Add these functions to your payrollController.js file
+
+/**
+ * Get payroll records for a specific employee
+ * @route GET /api/payroll/employee/:employeeId
+ * @access Private
+ */
+exports.getPayrollsByEmployee = async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+    const { month, year } = req.query;
+
+    // Build filter object
+    const filter = { employee: employeeId };
+
+    // Add month and year filters if provided
+    if (month) filter.month = parseInt(month);
+    if (year) filter.year = parseInt(year);
+
+    console.log("Fetching payrolls with filter:", filter);
+
+    // Find payroll records for the employee
+    const payrolls = await Payroll.find(filter)
+      .populate({
+        path: "employee",
+        select: "name department position baseSalary",
+      })
+      .sort({ year: -1, month: -1 }); // Sort by most recent first
+
+    if (payrolls.length === 0) {
+      return res.status(200).json({
+        message: "No payroll records found for this employee",
+        data: [],
+      });
+    }
+
+    // Format the payroll records
+    const formattedPayrolls = payrolls.map((payroll) => ({
+      _id: payroll._id,
+      employee: {
+        _id: payroll.employee._id,
+        name: payroll.employee.name || "Chưa cập nhật",
+        department: payroll.employee.department || "Chưa cập nhật",
+        position: payroll.employee.position || "Chưa cập nhật",
+        baseSalary: payroll.employee.baseSalary || 0,
+      },
+      month: payroll.month,
+      year: payroll.year,
+      periodLabel: `${payroll.month}/${payroll.year}`,
+      baseSalary: payroll.baseSalary,
+      allowances: payroll.allowances,
+      bonuses: payroll.bonuses,
+      deductions: payroll.deductions,
+      workingDays: payroll.workingDays,
+      leaveDays: payroll.leaveDays,
+      absentDays: payroll.absentDays,
+      overtimeHours: payroll.overtimeHours,
+      overtimeAmount: payroll.overtimeAmount,
+      totalAmount: payroll.totalAmount,
+      status: payroll.status,
+      paymentDate: payroll.paymentDate
+        ? payroll.paymentDate.toISOString().split("T")[0]
+        : "Chưa cập nhật",
+      paymentMethod: payroll.paymentMethod,
+      bankInfo: payroll.bankInfo,
+      note: payroll.note,
+    }));
+
+    res.json({
+      count: formattedPayrolls.length,
+      data: formattedPayrolls,
+    });
+  } catch (err) {
+    console.error("Error fetching employee payrolls:", err);
+
+    // Handle invalid ID format error
+    if (err.kind === "ObjectId") {
+      return res.status(400).json({ message: "Invalid employee ID format" });
+    }
+
+    res.status(500).json({
+      message: "Server error while fetching payroll records",
+      error: err.message,
+    });
+  }
+};
+
+/**
+ * Get the latest payroll record for a specific employee
+ * @route GET /api/payroll/employee/:employeeId/latest
+ * @access Private
+ */
+exports.getLatestPayrollByEmployee = async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+
+    // Find the most recent payroll record for the employee
+    const payroll = await Payroll.findOne({ employee: employeeId })
+      .populate({
+        path: "employee",
+        select: "name department position baseSalary",
+      })
+      .sort({ year: -1, month: -1 }) // Sort by most recent first
+      .limit(1);
+
+    if (!payroll) {
+      return res.status(200).json({
+        message: "No payroll records found for this employee",
+        data: null,
+      });
+    }
+
+    // Format the payroll record
+    const result = {
+      _id: payroll._id,
+      employee: {
+        _id: payroll.employee._id,
+        name: payroll.employee.name || "Chưa cập nhật",
+        department: payroll.employee.department || "Chưa cập nhật",
+        position: payroll.employee.position || "Chưa cập nhật",
+        baseSalary: payroll.employee.baseSalary || 0,
+      },
+      month: payroll.month,
+      year: payroll.year,
+      periodLabel: `${payroll.month}/${payroll.year}`,
+      baseSalary: payroll.baseSalary,
+      allowances: payroll.allowances,
+      bonuses: payroll.bonuses,
+      deductions: payroll.deductions,
+      workingDays: payroll.workingDays,
+      leaveDays: payroll.leaveDays,
+      absentDays: payroll.absentDays,
+      overtimeHours: payroll.overtimeHours,
+      overtimeAmount: payroll.overtimeAmount,
+      totalAmount: payroll.totalAmount,
+      status: payroll.status,
+      paymentDate: payroll.paymentDate
+        ? payroll.paymentDate.toISOString().split("T")[0]
+        : "Chưa cập nhật",
+      paymentMethod: payroll.paymentMethod,
+      bankInfo: payroll.bankInfo,
+      note: payroll.note,
+    };
+
+    res.json({ data: result });
+  } catch (err) {
+    console.error("Error fetching latest employee payroll:", err);
+
+    // Handle invalid ID format error
+    if (err.kind === "ObjectId") {
+      return res.status(400).json({ message: "Invalid employee ID format" });
+    }
+
+    res.status(500).json({
+      message: "Server error while fetching latest payroll record",
+      error: err.message,
+    });
   }
 };

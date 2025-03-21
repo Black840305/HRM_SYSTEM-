@@ -19,7 +19,16 @@ const {
 const router = express.Router();
 
 // Basic CRUD routes
-router.get("/", verifyAccessToken, getAllAttendances);
+router.get(
+  "/",
+  (req, res, next) => {
+    console.log("Attendance route HIT:", req.query);
+    next();
+  },
+  verifyAccessToken,
+  authorizeRoles(["admin"]),
+  getAllAttendances
+);
 router.get("/:id", verifyAccessToken, getAttendanceById);
 router.post(
   "/",

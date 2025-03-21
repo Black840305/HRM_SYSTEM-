@@ -5,6 +5,7 @@ const {
   createNotification,
   updateNotification,
   deleteNotification,
+  getEmployeeNotifications,
 } = require("../controllers/notificationController");
 const {
   verifyAccessToken,
@@ -13,12 +14,15 @@ const {
 
 const router = express.Router();
 
+// Add this route for employees to get their own notifications
+
 router.get(
   "/",
   verifyAccessToken,
   authorizeRoles(["admin"]),
   getAllNotifications
 );
+router.get("/for-employee", verifyAccessToken, getEmployeeNotifications);
 router.get("/:id", verifyAccessToken, getNotificationById);
 router.post(
   "/",

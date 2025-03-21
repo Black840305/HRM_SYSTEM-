@@ -25,12 +25,36 @@ const getAllNotifications = async (req, res) => {
   }
 };
 
+const getEmployeeNotifications = async (req, res) => {
+  try {
+    // Get the employee ID from the authenticated user
+    const employeeId = req.user.employeeId;
+
+    // Find notifications where this employee is a recipient
+    // or notifications for their department
+    const notifications = await Notifications.find({
+      $or: [
+        { recipients: employeeId },
+        { department: req.user.departmentId },
+        { recipients: { $exists: true, $size: 0 } }, // Global notifications with no specific recipients
+      ],
+    })
+      .populate("recipients", "name email")
+      .populate("department", "name")
+      .sort({ createdAt: -1 });
+
+    res.json(notifications);
+  } catch (err) {
+    console.error("❌ Lỗi khi lấy thông báo nhân viên:", err);
+    res.status(500).json({ msg: "Lỗi server khi lấy thông báo nhân viên" });
+  }
+};
 // 📌 Lấy thông báo theo ID
 const getNotificationById = async (req, res) => {
   try {
     const notification = await Notifications.findById(req.params.id)
       .populate("recipients", "name email")
-      .populate("targetDepartment", "name");
+      .populate("department", "name");
 
     if (!notification)
       return res.status(404).json({ msg: "Không tìm thấy thông báo" });
@@ -44,15 +68,14 @@ const getNotificationById = async (req, res) => {
 
 // 📌 Tạo mới thông báo
 const createNotification = async (req, res) => {
-  const { title, message, recipients, targetDepartment, urgency, status } =
-    req.body;
+  const { title, message, recipients, department, urgency, status } = req.body;
 
   try {
     const newNotification = new Notifications({
       title,
       message,
       recipients: recipients ? recipients.map((id) => id) : [],
-      targetDepartment: targetDepartment || null,
+      department: department || null,
       urgency: urgency || "medium",
       status: status || "active",
     });
@@ -115,4 +138,5 @@ module.exports = {
   createNotification,
   updateNotification,
   deleteNotification,
+  getEmployeeNotifications,
 };
