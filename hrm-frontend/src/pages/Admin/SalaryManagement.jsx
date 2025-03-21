@@ -18,6 +18,8 @@ const SalaryManagement = () => {
     bonuses: [],
     deductions: [],
     effectiveDate: "",
+    month: new Date().getMonth() + 1, // Tháng hiện tại (1-12)
+    year: new Date().getFullYear(), // Năm hiện tại
     note: "",
   });
   const [showHistory, setShowHistory] = useState(false);
@@ -39,6 +41,7 @@ const SalaryManagement = () => {
   });
 
   const navigate = useNavigate();
+  const API_URL = "http://localhost:3000/api";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +60,7 @@ const SalaryManagement = () => {
 
       try {
         // Fetch admin info
-        const { data } = await axios.get("http://localhost:3000/api/auth/me", {
+        const { data } = await axios.get(`${API_URL}/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -68,7 +71,7 @@ const SalaryManagement = () => {
 
         // Fetch admin details
         const adminRes = await axios.get(
-          `http://localhost:3000/api/employees/${data.employeeId}`,
+          `${API_URL}/employees/${data.employeeId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -76,16 +79,52 @@ const SalaryManagement = () => {
 
         setAdminData(adminRes.data);
 
-        // Fetch all employees with their salary details
+        // Fetch all employees
         const employeesRes = await axios.get(
-          "http://localhost:3000/api/employees?includeSalary=true",
+          `${API_URL}/employees?includeSalary=true`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        setEmployees(employeesRes.data);
-        setFilteredEmployees(employeesRes.data);
+        // Xử lý dữ liệu nhân viên và thông tin lương
+        const employeesWithSalary = await Promise.all(
+          employeesRes.data.map(async (employee) => {
+            try {
+              // Lấy bản ghi lương mới nhất cho mỗi nhân viên
+              const salaryRes = await axios.get(
+                `${API_URL}/payroll/employee/${employee._id}/latest`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
+
+              // Gán thông tin lương vào nhân viên nếu có
+              if (salaryRes.data && salaryRes.data.data) {
+                return {
+                  ...employee,
+                  salary: salaryRes.data.data.baseSalary,
+                  allowances: salaryRes.data.data.allowances || [],
+                  bonuses: salaryRes.data.data.bonuses || [],
+                  deductions: salaryRes.data.data.deductions || [],
+                  totalSalary: salaryRes.data.data.totalAmount,
+                  salaryUpdatedAt: salaryRes.data.data.updatedAt,
+                  payrollId: salaryRes.data.data._id,
+                };
+              }
+              return employee;
+            } catch (error) {
+              console.error(
+                `Error fetching salary for employee ${employee._id}:`,
+                error
+              );
+              return employee;
+            }
+          })
+        );
+
+        setEmployees(employeesWithSalary);
+        setFilteredEmployees(employeesWithSalary);
         setLoading(false);
       } catch (error) {
         handleError(error);
@@ -133,14 +172,19 @@ const SalaryManagement = () => {
 
   const handleAdjustSalary = (employee) => {
     setCurrentEmployee(employee);
+
+    // Đặt giá trị mặc định nếu nhân viên chưa có thông tin lương
     setFormData({
       baseSalary: employee.salary || 0,
       allowances: employee.allowances || [],
       bonuses: employee.bonuses || [],
       deductions: employee.deductions || [],
+      month: new Date().getMonth() + 1, // Tháng hiện tại (1-12)
+      year: new Date().getFullYear(), // Năm hiện tại
       effectiveDate: new Date().toISOString().split("T")[0],
       note: "",
     });
+
     setShowAdjustForm(true);
     setShowHistory(false);
   };
@@ -153,14 +197,16 @@ const SalaryManagement = () => {
     const token = localStorage.getItem("token");
 
     try {
+      // Sử dụng API của Payroll để lấy lịch sử lương
       const historyRes = await axios.get(
-        `http://localhost:3000/api/employees/${employee._id}/salary-history`,
+        `${API_URL}/payroll/employee/${employee._id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      setSalaryHistory(historyRes.data);
+      // Lấy danh sách payroll từ response
+      setSalaryHistory(historyRes.data.data || []);
     } catch (error) {
       console.error("Error fetching salary history:", error);
       alert(
@@ -173,7 +219,9 @@ const SalaryManagement = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === "note" ? value : parseFloat(value) || 0,
+      [name]: ["baseSalary", "month", "year"].includes(name)
+        ? parseFloat(value)
+        : value,
     });
   };
 
@@ -281,30 +329,90 @@ const SalaryManagement = () => {
     const token = localStorage.getItem("token");
 
     try {
-      // Update employee salary
-      await axios.put(
-        `http://localhost:3000/api/employees/salary/${currentEmployee._id}`,
-        {
-          ...formData,
-          totalSalary: calculateTotalSalary(),
-        },
-        {
+      if (
+        !window.confirm("Bạn có chắc chắn muốn cập nhật thông tin lương này?")
+      ) {
+        return;
+      }
+
+      const totalAmount = calculateTotalSalary();
+      const payrollData = {
+        ...formData,
+        employee: currentEmployee._id,
+        totalAmount: totalAmount,
+      };
+
+      console.log("Sending payroll data:", payrollData);
+
+      let response;
+
+      // Nếu nhân viên đã có payrollId, cập nhật bản ghi lương hiện có
+      if (currentEmployee.payrollId) {
+        response = await axios.put(
+          `${API_URL}/payroll/${currentEmployee.payrollId}`,
+          payrollData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      } else {
+        // Tạo bản ghi lương mới
+        response = await axios.post(`${API_URL}/payroll`, payrollData, {
           headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+        });
+      }
+
+      console.log("Server response:", response.data);
+
+      // Hiển thị thông báo thành công
+      alert(`Cập nhật lương thành công cho nhân viên ${currentEmployee.name}!`);
 
       // Refresh employee data
       const employeesRes = await axios.get(
-        "http://localhost:3000/api/employees?includeSalary=true",
+        `${API_URL}/employees?includeSalary=true`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      setEmployees(employeesRes.data);
+      // Tương tự như trong useEffect, cần lấy thông tin lương mới nhất cho mỗi nhân viên
+      const employeesWithSalary = await Promise.all(
+        employeesRes.data.map(async (employee) => {
+          try {
+            const salaryRes = await axios.get(
+              `${API_URL}/payroll/employee/${employee._id}/latest`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+
+            if (salaryRes.data && salaryRes.data.data) {
+              return {
+                ...employee,
+                salary: salaryRes.data.data.baseSalary,
+                allowances: salaryRes.data.data.allowances || [],
+                bonuses: salaryRes.data.data.bonuses || [],
+                deductions: salaryRes.data.data.deductions || [],
+                totalSalary: salaryRes.data.data.totalAmount,
+                salaryUpdatedAt: salaryRes.data.data.updatedAt,
+                payrollId: salaryRes.data.data._id,
+              };
+            }
+            return employee;
+          } catch (error) {
+            console.error(
+              `Error fetching salary for employee ${employee._id}:`,
+              error
+            );
+            return employee;
+          }
+        })
+      );
+
+      setEmployees(employeesWithSalary);
       setFilteredEmployees(
-        employeesRes.data.filter((emp) =>
-          `${emp.firstName} ${emp.lastName} ${emp.email} ${emp.position}`
+        employeesWithSalary.filter((emp) =>
+          `${emp.name} ${emp.email} ${emp.position}`
             .toLowerCase()
             .includes(searchTerm.toLowerCase())
         )
@@ -312,10 +420,25 @@ const SalaryManagement = () => {
 
       setShowAdjustForm(false);
       setCurrentEmployee(null);
-      alert("Salary updated successfully!");
     } catch (error) {
       console.error("Error updating salary:", error);
-      alert("An error occurred while updating salary. Please try again.");
+
+      // Hiển thị thông báo lỗi chi tiết hơn
+      let errorMessage = "Lỗi khi cập nhật lương.";
+      if (error.response) {
+        errorMessage = `Lỗi: ${error.response.status} - ${
+          error.response.data.message ||
+          error.response.data.msg ||
+          "Không có thông báo từ server"
+        }`;
+      } else if (error.request) {
+        errorMessage =
+          "Không thể kết nối tới server. Vui lòng kiểm tra kết nối mạng.";
+      } else {
+        errorMessage = `Lỗi: ${error.message}`;
+      }
+
+      alert(errorMessage);
     }
   };
 
@@ -353,7 +476,7 @@ const SalaryManagement = () => {
   return (
     <div className="admin-dashboard">
       <div className="admin-header">
-        <h1 onClick={() => navigate("/admin-dashboard")}>Admin DashBoard</h1>
+        <h1 onClick={() => navigate("/admin-dashboard")}>Admin Dashboard</h1>
         <div className="admin-info">
           <span>Welcome, {adminData?.name}</span>
           <button className="logout-btn" onClick={handleLogout}>
@@ -431,6 +554,33 @@ const SalaryManagement = () => {
             <div className="form-container">
               <h3>Adjust Salary for {currentEmployee.name}</h3>
               <form onSubmit={handleSubmitForm}>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Tháng</label>
+                    <input
+                      type="number"
+                      name="month"
+                      min="1"
+                      max="12"
+                      value={formData.month}
+                      onChange={handleFormChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Năm</label>
+                    <input
+                      type="number"
+                      name="year"
+                      min="2020"
+                      max="2030"
+                      value={formData.year}
+                      onChange={handleFormChange}
+                      required
+                    />
+                  </div>
+                </div>
+
                 <div className="form-group">
                   <label>Base Salary (VND)</label>
                   <input
@@ -643,25 +793,24 @@ const SalaryManagement = () => {
                 <table className="history-table">
                   <thead>
                     <tr>
-                      <th>Date</th>
+                      <th>Pay Period</th>
                       <th>Base Salary</th>
                       <th>Allowances</th>
                       <th>Bonuses</th>
                       <th>Deductions</th>
                       <th>Total</th>
+                      <th>Status</th>
                       <th>Note</th>
                     </tr>
                   </thead>
                   <tbody>
                     {salaryHistory.map((record, index) => (
                       <tr key={index}>
-                        <td>
-                          {new Date(record.effectiveDate).toLocaleDateString()}
-                        </td>
+                        <td>{`${record.month}/${record.year}`}</td>
                         <td>{record.baseSalary.toLocaleString("vi-VN")} VND</td>
                         <td>
                           {record.allowances && record.allowances.length > 0 ? (
-                            <ul>
+                            <ul className="compact-list">
                               {record.allowances.map((a, i) => (
                                 <li key={i}>
                                   {a.type}: {a.amount.toLocaleString("vi-VN")}{" "}
@@ -675,7 +824,7 @@ const SalaryManagement = () => {
                         </td>
                         <td>
                           {record.bonuses && record.bonuses.length > 0 ? (
-                            <ul>
+                            <ul className="compact-list">
                               {record.bonuses.map((b, i) => (
                                 <li key={i}>
                                   {b.type}: {b.amount.toLocaleString("vi-VN")}{" "}
@@ -689,7 +838,7 @@ const SalaryManagement = () => {
                         </td>
                         <td>
                           {record.deductions && record.deductions.length > 0 ? (
-                            <ul>
+                            <ul className="compact-list">
                               {record.deductions.map((d, i) => (
                                 <li key={i}>
                                   {d.type}: {d.amount.toLocaleString("vi-VN")}{" "}
@@ -702,12 +851,13 @@ const SalaryManagement = () => {
                           )}
                         </td>
                         <td>
-                          {record.totalSalary > 0
-                            ? record.totalSalary.toLocaleString("vi-VN") +
+                          {record.totalAmount
+                            ? record.totalAmount.toLocaleString("vi-VN") +
                               " VND"
-                            : "Chưa cập nhật"}
+                            : "N/A"}
                         </td>
-                        <td>{record.note}</td>
+                        <td>{record.status || "pending"}</td>
+                        <td>{record.note || "No note"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -743,7 +893,7 @@ const SalaryManagement = () => {
                 {filteredEmployees.map((emp) => (
                   <tr key={emp._id}>
                     <td>{emp.name}</td>
-                    <td>{emp.department}</td>
+                    <td>{emp.department?.name || emp.department || "N/A"}</td>
                     <td>{emp.position || "Not set"}</td>
                     <td>{(emp.salary || 0).toLocaleString("vi-VN")} VND</td>
                     <td>
@@ -822,7 +972,5 @@ const SalaryManagement = () => {
     </div>
   );
 };
-
-// Helper function to calculate total salary for an employee
 
 export default SalaryManagement;

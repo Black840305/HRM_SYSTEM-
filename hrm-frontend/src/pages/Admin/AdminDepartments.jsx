@@ -130,7 +130,7 @@ const DepartmentManagement = () => {
     setFormData({
       name: department.name,
       description: department.description || "",
-      manager: department.manager || "",
+      manager: department.manager?._id || department.manager || "", // Xử lý cả trường hợp manager
       location: department.location || "",
       budget: department.budget || 0,
     });
@@ -349,7 +349,7 @@ const DepartmentManagement = () => {
                     onChange={handleFormChange}
                   />
                 </div>
-                <div className="form-group">
+                {/* <div className="form-group">
                   <label>Manager</label>
                   <input
                     type="text"
@@ -357,7 +357,7 @@ const DepartmentManagement = () => {
                     value={formData.manager}
                     onChange={handleFormChange}
                   />
-                </div>
+                </div> */}
                 <div className="form-group">
                   <label>Location</label>
                   <input
@@ -398,7 +398,7 @@ const DepartmentManagement = () => {
                 <tr>
                   <th>Name</th>
                   <th>Description</th>
-                  <th>Manager</th>
+                  {/* <th>Manager</th> */}
                   <th>Location</th>
                   <th>Budget (VND)</th>
                   <th>Employee Count</th>
@@ -410,7 +410,8 @@ const DepartmentManagement = () => {
                   <tr key={dept._id}>
                     <td>{dept.name}</td>
                     <td>{dept.description || "Not set"}</td>
-                    <td>{dept.manager || "Not assigned"}</td>
+                    {/* <td>{dept.manager?.name || "Not assigned"}</td>{" "} */}
+                    {/* Xử lý hiển thị tên manager nếu đã populate */}
                     <td>{dept.location || "Not set"}</td>
                     <td>{dept.budget?.toLocaleString("vi-VN") || "0"} VND</td>
                     <td>{dept.employeeCount || 0}</td>

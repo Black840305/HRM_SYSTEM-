@@ -1,0 +1,138 @@
+/* Employee Dashboard Styles */
+.employee-dashboard {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #f5f7fb;
+  min-height: 100vh;
+}
+
+.employee-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.employee-header h1 {
+  color: var(--dark-color);
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.employee-content {
+  display: flex;
+  margin-top: 20px;
+  flex: 1;
+}
+
+.employee-sidebar {
+  width: 200px;
+  background-color: #fff;
+  border-right: 1px solid var(--gray-light);
+  padding: 25px 0;
+}
+
+.employee-sidebar h3 {
+  color: var(--gray-color);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  padding: 0 25px;
+}
+
+.employee-sidebar ul {
+  list-style-type: none;
+  margin-bottom: 30px;
+}
+
+.employee-sidebar ul li {
+  padding: 14px 25px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  color: var(--dark-color);
+  font-weight: 500;
+}
+
+.employee-sidebar ul li.active {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-left: 3px solid var(--primary-color);
+  font-weight: 600;
+}
+
+.employee-sidebar ul li:hover:not(.active) {
+  background-color: var(--light-color);
+}
+
+.employee-main {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+  background-color: #f5f7fb;
+}
+
+.logout-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #e63939;
+}
+
+/* Loading and Error States */
+.loading, .error-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  font-size: 18px;
+}
+
+.loading {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.error-message {
+  color: var(--danger-color);
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .employee-content {
+    flex-direction: column;
+  }
+  
+  .employee-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--gray-light);
+    padding: 15px;
+  }
+  
+  .employee-main {
+    padding: 15px;
+  }
+}

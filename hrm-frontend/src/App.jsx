@@ -9,11 +9,13 @@ import HandleEditEmployee from "./pages/Admin/HandleEditEmployee";
 import HandleViewEmployee from "./pages/Admin/HandleViewEmployee";
 import AdminDepartment from "./pages/Admin/AdminDepartments";
 import SalaryManagement from "./pages/Admin/SalaryManagement";
-import AttendanceManagement from "./pages/Admin/AttendanceManagement";
+import AdminAttendanceManagement from "./pages/Admin/AttendanceManagement";
 import HandleAddEmployee from "./pages/Admin/HandleAddEmployee";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
 import Notifications from "./pages/Employee/EmployeeNotifications";
+import EmployeeDashboard from "./pages/Employee/EmployeeDashboard"; // Import the
 // import AdminLeave from "./pages/Admin/AdminLeave";
+import DepartmentEmployees from "./pages/Admin/DepartmentsEmployees";
 function App() {
   const [user, setUser] = useState(null);
 
@@ -30,8 +32,10 @@ function App() {
         }
       />
       <Route path="/employee-profile" element={<Profile />} />
+      <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/admin/departments" element={<AdminDepartment />} />
+      <Route path="/admin/departments/:departmentId/employees" element={<DepartmentEmployees />} />
       <Route
         path="/admin/employee/:employeeId"
         element={<HandleViewEmployee />}
@@ -42,15 +46,18 @@ function App() {
       />
       <Route path="/admin/salary" element={<SalaryManagement />} />
       <Route path="/admin/salary/:employeeId" element={<SalaryManagement />} />
-      <Route path="/admin/attendance" element={<AttendanceManagement />} />
+      <Route path="/admin/attendance" element={<AdminAttendanceManagement />} />
       <Route
         path="/admin/attendance/:employeeId"
-        element={<AttendanceManagement />}
+        element={<AdminAttendanceManagement />}
       />
-      <Route path="/admin/add-attendance" element={<AttendanceManagement />} />
+      <Route
+        path="/admin/add-attendance"
+        element={<AdminAttendanceManagement />}
+      />
       <Route
         path="/admin/edit-attendance/:id"
-        element={<AttendanceManagement />}
+        element={<AdminAttendanceManagement />}
       />
       <Route path="/admin/add-employee" element={<HandleAddEmployee />} />
       <Route

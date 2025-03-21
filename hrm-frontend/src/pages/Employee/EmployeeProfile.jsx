@@ -74,15 +74,15 @@ const Profile = () => {
           <span className="back-home" onClick={() => navigate("/dashboard")}>
             ⬅️ Trang chủ
           </span>
-          <span className="logout-btn" onClick={handleLogout}>
+          {/* <span className="logout-btn" onClick={handleLogout}>
             🚪 Đăng xuất
-          </span>
+          </span> */}
         </div>
         <h1 className="profile-title">Thông Tin Cá Nhân</h1>
         <div className="profile-card">
           <img src={avatarUrl} alt="Avatar" className="profile-avatar" />
           <h2 className="profile-name">
-            {employee.firstName} {employee.lastName}
+            {employee.name}
           </h2>
           <hr className="profile-divider" />
           <p>
@@ -90,7 +90,7 @@ const Profile = () => {
           </p>
           <p>
             <strong>Phòng ban:</strong>{" "}
-            {employee.department?.name || "Chưa cập nhật"}
+            {employee.department || "Chưa cập nhật"}
           </p>
           <p>
             <strong>Tên công việc:</strong> {employee.position}
@@ -107,8 +107,8 @@ const Profile = () => {
           </p>
           <p>
             <strong>Ngày sinh:</strong>{" "}
-            {employee.dateOfBirth
-              ? new Date(employee.dateOfBirth).toLocaleDateString("vi-VN")
+            {employee.dob
+              ? new Date(employee.dob).toLocaleDateString("vi-VN")
               : "Chưa cập nhật"}
           </p>
           <p>
@@ -119,8 +119,8 @@ const Profile = () => {
           </p>
           <p>
             <strong>Ngày bắt đầu làm việc:</strong>{" "}
-            {employee.hireDate
-              ? new Date(employee.hireDate).toLocaleDateString("vi-VN")
+            {employee.startDate
+              ? new Date(employee.startDate).toLocaleDateString("vi-VN")
               : "Chưa cập nhật"}
           </p>
           <button

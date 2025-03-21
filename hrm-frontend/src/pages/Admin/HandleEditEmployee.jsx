@@ -10,14 +10,14 @@ const HandleEditEmployee = () => {
 
   const [employeeData, setEmployeeData] = useState({
     name: "",
-    email: "", // Added email field
+    email: "",
     dob: "",
     gender: "",
     address: "",
     phone: "",
     department: { _id: "" },
     position: "",
-    salary: "",
+    baseSalary: "", // Đổi từ salary thành baseSalary
     startDate: "",
   });
 
@@ -38,6 +38,7 @@ const HandleEditEmployee = () => {
 
         console.log("Fetching employee with ID:", employeeId);
 
+        // Lấy thông tin nhân viên
         const { data } = await axios.get(
           `${API_BASE_URL}/api/employees/${employeeId}`,
           {
@@ -46,22 +47,32 @@ const HandleEditEmployee = () => {
         );
 
         console.log("Employee data received:", data);
-        console.log("Raw department data:", data.department);
+
+        // Lấy thông tin lương mới nhất từ bảng Payroll
+        const payrollRes = await axios.get(
+          `${API_BASE_URL}/api/payroll/employee/${employeeId}/latest`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        console.log("Latest payroll data:", payrollRes.data);
 
         // Format date strings for input fields
         const formattedData = {
           ...data,
-          email: data.email || (data.user && data.user.email) || "", // Get email from user object if available
+          email: data.email || (data.user && data.user.email) || "",
           dob: data.dob ? new Date(data.dob).toISOString().split("T")[0] : "",
           startDate: data.startDate
             ? new Date(data.startDate).toISOString().split("T")[0]
             : "",
-          // Make sure department is properly formatted as an object with _id
           department: data.department
             ? typeof data.department === "object"
               ? data.department
               : { _id: data.department }
             : { _id: "" },
+          // Lấy baseSalary từ dữ liệu payroll
+          baseSalary: payrollRes.data?.data?.baseSalary || "",
         };
 
         console.log("Formatted data:", formattedData);
@@ -69,7 +80,6 @@ const HandleEditEmployee = () => {
 
         // Set avatar preview if employee has an avatar
         if (data.avatar) {
-          // Convert relative path to full URL
           const avatarPath = data.avatar.startsWith("/")
             ? data.avatar
             : `/${data.avatar}`;
@@ -119,19 +129,19 @@ const HandleEditEmployee = () => {
       // Prepare data with all required fields
       const updatedData = {
         name: employeeData.name,
-        email: employeeData.email, // Include email in the update
+        email: employeeData.email,
         dob: employeeData.dob,
         gender: employeeData.gender,
         address: employeeData.address,
         phone: employeeData.phone,
         department: departmentId,
         position: employeeData.position,
-        salary: Number(employeeData.salary),
         startDate: employeeData.startDate,
       };
 
       console.log("Sending update data:", updatedData);
 
+      // Cập nhật thông tin nhân viên
       const response = await axios.put(
         `${API_BASE_URL}/api/employees/${employeeId}`,
         updatedData,
@@ -142,6 +152,55 @@ const HandleEditEmployee = () => {
           },
         }
       );
+
+      // Cập nhật thông tin lương trong bảng Payroll
+      if (employeeData.baseSalary) {
+        try {
+          // Tìm bản ghi lương mới nhất
+          const payrollRes = await axios.get(
+            `${API_BASE_URL}/api/payroll/employee/${employeeId}/latest`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (payrollRes.data?.data?._id) {
+            // Cập nhật bản ghi lương hiện có
+            await axios.put(
+              `${API_BASE_URL}/api/payroll/${payrollRes.data.data._id}`,
+              {
+                baseSalary: Number(employeeData.baseSalary),
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+          } else {
+            // Tạo bản ghi lương mới nếu chưa có
+            const currentDate = new Date();
+            await axios.post(
+              `${API_BASE_URL}/api/payroll`,
+              {
+                employee: employeeId,
+                baseSalary: Number(employeeData.baseSalary),
+                month: currentDate.getMonth() + 1,
+                year: currentDate.getFullYear(),
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+          }
+        } catch (payrollError) {
+          console.error("Error updating payroll:", payrollError);
+        }
+      }
 
       console.log("Employee updated successfully!", response.data);
       alert("Employee updated successfully!");
@@ -392,7 +451,7 @@ const HandleEditEmployee = () => {
                 const selectedDeptId = e.target.value;
                 setEmployeeData({
                   ...employeeData,
-                  department: { _id: selectedDeptId }, // Save only the ID
+                  department: { _id: selectedDeptId },
                 });
               }}
               className="form-input"
@@ -418,15 +477,15 @@ const HandleEditEmployee = () => {
               className="form-input"
             />
 
-            <label htmlFor="salary" className="form-label">
-              Salary
+            <label htmlFor="baseSalary" className="form-label">
+              Base Salary
             </label>
             <input
               type="number"
-              id="salary"
-              value={employeeData.salary || ""}
+              id="baseSalary"
+              value={employeeData.baseSalary || ""}
               onChange={(e) =>
-                setEmployeeData({ ...employeeData, salary: e.target.value })
+                setEmployeeData({ ...employeeData, baseSalary: e.target.value })
               }
               className="form-input"
             />

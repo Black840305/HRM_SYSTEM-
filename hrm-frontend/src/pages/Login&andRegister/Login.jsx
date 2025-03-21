@@ -24,7 +24,7 @@ const LoginAndRegister = () => {
       if (role === "admin") {
         navigate("/admin-dashboard");
       } else {
-        navigate("/employee-profile");
+        navigate("/employee-dashboard");
       }
     }
   }, [navigate]);
@@ -63,7 +63,7 @@ const LoginAndRegister = () => {
           if (res.data.role === "admin") {
             navigate("/admin-dashboard");
           } else {
-            navigate("/employee-profile");
+            navigate("/employee-dashboard");
           }
         }, 800);
       } else {

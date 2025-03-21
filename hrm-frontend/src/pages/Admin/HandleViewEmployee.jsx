@@ -13,6 +13,7 @@ const HandleViewEmployee = () => {
   const [employeeData, setEmployeeData] = useState(
     location.state?.employee || null
   );
+  const [payrollData, setPayrollData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -24,6 +25,7 @@ const HandleViewEmployee = () => {
 
         console.log("Fetching employee with ID:", employeeId);
 
+        // Lấy thông tin nhân viên
         const { data } = await axios.get(
           `${API_BASE_URL}/api/employees/${employeeId}`,
           {
@@ -33,6 +35,22 @@ const HandleViewEmployee = () => {
 
         console.log("Employee data received:", data);
         setEmployeeData(data);
+
+        // Lấy thông tin lương mới nhất từ bảng Payroll
+        try {
+          const payrollRes = await axios.get(
+            `${API_BASE_URL}/api/payroll/employee/${employeeId}/latest`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          console.log("Latest payroll data:", payrollRes.data);
+          setPayrollData(payrollRes.data?.data || null);
+        } catch (payrollError) {
+          console.error("Error fetching payroll data:", payrollError);
+          // Không cần set error ở đây, chỉ log lỗi
+        }
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching employee:", error);
@@ -74,8 +92,6 @@ const HandleViewEmployee = () => {
     <div className="employee-details-container">
       <h1>Employee Details</h1>
 
-      {/* Avatar display section */}
-
       <div className="employee-details">
         <p>
           <strong>Name:</strong> {employeeData.name}
@@ -104,15 +120,14 @@ const HandleViewEmployee = () => {
         </p>
         <p>
           <strong>Salary:</strong>{" "}
-          {employeeData.salary
-            ? employeeData.salary.toLocaleString("vi-VN") + " VND"
+          {payrollData?.baseSalary
+            ? payrollData.baseSalary.toLocaleString("vi-VN") + " VND"
             : "Not Updated"}
         </p>
         <p>
           <strong>Start Date:</strong> {formattedStartDate}
         </p>
         <p>
-          {" "}
           <strong>Avatar:</strong>
           {avatarUrl && (
             <div className="employee-avatar">

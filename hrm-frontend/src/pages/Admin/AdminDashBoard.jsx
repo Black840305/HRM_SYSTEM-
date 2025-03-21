@@ -67,6 +67,7 @@ const AdminDashboard = () => {
         );
         setEmployees(filteredEmployees);
         setFilteredEmployees(filteredEmployees); // Initialize filtered list
+
         setLoading(false);
       } catch (error) {
         handleError(error);
