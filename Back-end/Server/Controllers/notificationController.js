@@ -1,4 +1,5 @@
 // 📌 Lấy tất cả thông báo
+const employeeModel = require("../models/employeeModel");
 const Notifications = require("../models/notificationModel");
 const getAllNotifications = async (req, res) => {
   try {
@@ -25,28 +26,49 @@ const getAllNotifications = async (req, res) => {
   }
 };
 
-const getEmployeeNotifications = async (req, res) => {
+const getNotificationsForEmployee = async (req, res) => {
   try {
-    // Get the employee ID from the authenticated user
-    const employeeId = req.user.employeeId;
+    const { employeeId } = req.params;
 
-    // Find notifications where this employee is a recipient
-    // or notifications for their department
+    // Fetch employee information to get their department
+    const employee = await employeeModel.findById(employeeId);
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee not found",
+      });
+    }
+
+    // Find notifications that are either:
+    // 1. Directly sent to this employee, or
+    // 2. Sent to the employee's department
     const notifications = await Notifications.find({
-      $or: [
-        { recipients: employeeId },
-        { department: req.user.departmentId },
-        { recipients: { $exists: true, $size: 0 } }, // Global notifications with no specific recipients
+      $and: [
+        { status: "active" }, // Only active notifications
+        {
+          $or: [
+            { recipients: { $in: [employeeId] } }, // Direct recipient
+            { department: employee.department }, // Department-wide notification
+          ],
+        },
       ],
     })
-      .populate("recipients", "name email")
-      .populate("department", "name")
-      .sort({ createdAt: -1 });
+      .populate("recipients", "name email") // Populate recipient details
+      .populate("department", "name") // Populate department details
+      .sort({ createdAt: -1 }); // Sort by most recent first
 
-    res.json(notifications);
-  } catch (err) {
-    console.error("❌ Lỗi khi lấy thông báo nhân viên:", err);
-    res.status(500).json({ msg: "Lỗi server khi lấy thông báo nhân viên" });
+    return res.status(200).json({
+      success: true,
+      count: notifications.length,
+      data: notifications,
+    });
+  } catch (error) {
+    console.error("Error fetching notifications for employee:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch notifications",
+      error: error.message,
+    });
   }
 };
 // 📌 Lấy thông báo theo ID
@@ -66,6 +88,44 @@ const getNotificationById = async (req, res) => {
   }
 };
 
+const getNotificationsForDepartment = async (req, res) => {
+  try {
+    const { departmentId } = req.params;
+
+    // Kiểm tra xem departmentId có phải là null hoặc không hợp lệ không
+    if (!departmentId || departmentId === "null") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid department ID",
+      });
+    }
+
+    // Lấy tất cả thông báo dành cho phòng ban cụ thể
+    const notifications = await Notifications.find({
+      $or: [
+        { department: departmentId }, // Thông báo cho cả phòng ban
+        { recipients: { $exists: false } }, // Thông báo không chỉ định người nhận
+      ],
+      status: "active", // Chỉ lấy thông báo đang hoạt động
+    })
+      .populate("recipients", "name email") // Lấy thông tin người nhận
+      .populate("department", "name") // Lấy tên phòng ban
+      .sort({ createdAt: -1 }); // Sắp xếp theo thời gian tạo
+
+    return res.status(200).json({
+      success: true,
+      count: notifications.length,
+      data: notifications,
+    });
+  } catch (error) {
+    console.error("Error fetching notifications for department:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch notifications",
+      error: error.message,
+    });
+  }
+};
 // 📌 Tạo mới thông báo
 const createNotification = async (req, res) => {
   const { title, message, recipients, department, urgency, status } = req.body;
@@ -138,5 +198,6 @@ module.exports = {
   createNotification,
   updateNotification,
   deleteNotification,
-  getEmployeeNotifications,
+  getNotificationsForEmployee,
+  getNotificationsForDepartment,
 };

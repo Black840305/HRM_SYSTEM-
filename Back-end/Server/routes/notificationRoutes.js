@@ -5,7 +5,8 @@ const {
   createNotification,
   updateNotification,
   deleteNotification,
-  getEmployeeNotifications,
+  getNotificationsForEmployee,
+  getNotificationsForDepartment
 } = require("../controllers/notificationController");
 const {
   verifyAccessToken,
@@ -22,8 +23,19 @@ router.get(
   authorizeRoles(["admin"]),
   getAllNotifications
 );
-router.get("/for-employee", verifyAccessToken, getEmployeeNotifications);
+// Route để lấy thông báo cho một nhân viên cụ thể
+router.get(
+  "/employee/:employeeId",
+  verifyAccessToken,
+  getNotificationsForEmployee
+);
+
 router.get("/:id", verifyAccessToken, getNotificationById);
+router.get(
+  "/department/:departmentId",
+  verifyAccessToken,
+  getNotificationsForDepartment
+);
 router.post(
   "/",
   verifyAccessToken,

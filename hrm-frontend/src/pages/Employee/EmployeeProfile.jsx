@@ -5,15 +5,9 @@ import "../../styles/Profile.css";
 
 const Profile = () => {
   const [employee, setEmployee] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const navigate = useNavigate();
-
-  // const decodeToken = (token) => {
-  //   try {
-  //     return JSON.parse(atob(token.split(".")[1]));
-  //   } catch {
-  //     return null;
-  //   }
-  // };
+  const API_BASE_URL = "http://localhost:3000";
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -24,11 +18,11 @@ const Profile = () => {
       }
 
       try {
-        const { data } = await axios.get("http://localhost:3000/api/auth/me", {
+        const { data } = await axios.get(`${API_BASE_URL}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("Dữ liệu từ API /me:", data); // ✅ Debug kiểm tra
+        console.log("Dữ liệu từ API /me:", data);
 
         if (!data?.employeeId || typeof data.employeeId !== "string") {
           console.error("employeeId không hợp lệ:", data.employeeId);
@@ -36,11 +30,21 @@ const Profile = () => {
         }
 
         const res = await axios.get(
-          `http://localhost:3000/api/employees/${data.employeeId}`,
+          `${API_BASE_URL}/api/employees/${data.employeeId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        setEmployee(res.data);
+        const employeeData = res.data;
+        setEmployee(employeeData);
+
+        // Set avatar preview logic
+        if (employeeData.avatar) {
+          const avatarPath = employeeData.avatar.startsWith("/")
+            ? employeeData.avatar
+            : `/${employeeData.avatar}`;
+
+          setAvatarPreview(`${API_BASE_URL}${avatarPath}`);
+        }
       } catch (error) {
         console.error("Lỗi lấy thông tin cá nhân:", error);
         navigate("/");
@@ -52,20 +56,10 @@ const Profile = () => {
 
   if (!employee) return <div>Đang tải thông tin cá nhân...</div>;
 
-  const avatarUrl = employee.avatar
-    ? `http://localhost:3000${employee.avatar}`
-    : `http://localhost:3000/uploads/default.jpg`;
-
   const formatPhoneNumber = (phone) =>
     phone
       ? phone.replace(/(\d{4})(\d{3})(\d{3})/, "$1 $2 $3")
       : "Chưa cập nhật";
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    navigate("/");
-  };
 
   return (
     <div className="profile-page">
@@ -74,23 +68,29 @@ const Profile = () => {
           <span className="back-home" onClick={() => navigate("/dashboard")}>
             ⬅️ Trang chủ
           </span>
-          {/* <span className="logout-btn" onClick={handleLogout}>
-            🚪 Đăng xuất
-          </span> */}
         </div>
         <h1 className="profile-title">Thông Tin Cá Nhân</h1>
         <div className="profile-card">
-          <img src={avatarUrl} alt="Avatar" className="profile-avatar" />
-          <h2 className="profile-name">
-            {employee.name}
-          </h2>
+          <div className="avatar-container">
+            {avatarPreview ? (
+              <img
+                src={avatarPreview}
+                alt="Employee Avatar"
+                className="avatar-preview"
+              />
+            ) : (
+              <div className="avatar-placeholder">
+                <i className="fas fa-user"></i>
+              </div>
+            )}
+          </div>
+          <h2 className="profile-name">{employee.name}</h2>
           <hr className="profile-divider" />
           <p>
             <strong>Email:</strong> {employee.email}
           </p>
           <p>
-            <strong>Phòng ban:</strong>{" "}
-            {employee.department || "Chưa cập nhật"}
+            <strong>Phòng ban:</strong> {employee.department || "Chưa cập nhật"}
           </p>
           <p>
             <strong>Tên công việc:</strong> {employee.position}

@@ -10,6 +10,8 @@ const {
   checkOut,
   getAttendanceSummary,
   getMonthlyAttendance,
+  getAttendanceByEmployeeAndDate,
+  getEmployeeDailyAttendance
 } = require("../controllers/attendanceController");
 const {
   verifyAccessToken,
@@ -54,6 +56,11 @@ router.get(
   "/employee/:employeeId",
   verifyAccessToken,
   getAttendancesByEmployee
+);
+router.get(
+  "/employee/:employeeId/date/:date", 
+  verifyAccessToken,
+  getEmployeeDailyAttendance
 );
 router.get("/summary/:employeeId", verifyAccessToken, getAttendanceSummary);
 router.post("/check-in", verifyAccessToken, checkIn);

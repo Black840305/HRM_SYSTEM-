@@ -1,129 +1,161 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/Notifications.css";
+import "../../styles/Notifications.css"; // Create this CSS file for styling
 
-const Notifications = () => {
+const EmployeeNotifications = () => {
   const [notifications, setNotifications] = useState([]);
-  const [departmentId, setDepartmentId] = useState(null);
-  const [departmentName, setDepartmentName] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
-  const employeeId = localStorage.getItem("employeeId");
-
   useEffect(() => {
-    const fetchEmployeeData = async () => {
-      try {
-        if (!token || !employeeId) return;
+    const fetchNotifications = async () => {
+      const token = localStorage.getItem("token");
+      const employeeId = localStorage.getItem("employeeId");
 
-        const res = await axios.get(
+      if (!token || !employeeId) {
+        console.log("No token or employeeId found, redirecting to login.");
+        return navigate("/");
+      }
+
+      try {
+        // First, fetch employee details to get department
+        const employeeResponse = await axios.get(
           `http://localhost:3000/api/employees/${employeeId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        setDepartmentId(res.data.department?._id || null);
-        setDepartmentName(res.data.department?.name || "Phòng ban của bạn");
-      } catch (error) {
-        console.error(
-          "❌ Lỗi khi lấy thông tin nhân viên:",
-          error.response?.data || error.message
+        const departmentId =
+          employeeResponse.data.department?._id ||
+          employeeResponse.data.department;
+
+        if (!departmentId) {
+          throw new Error("No department found for this employee");
+        }
+
+        // Fetch notifications for the specific department
+        const notificationsResponse = await axios.get(
+          `http://localhost:3000/api/notifications/employee/${employeeId}`, // Make sure this matches your backend route exactly
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
+
+        // Sort notifications by date, most recent first
+        const sortedNotifications = notificationsResponse.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+
+        setNotifications(sortedNotifications);
+        setLoading(false);
+      } catch (error) {
+        handleError(error);
       }
     };
 
-    fetchEmployeeData();
-  }, [employeeId, token]);
+    fetchNotifications();
+  }, [navigate]);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        if (!token) return;
+  const handleError = (error) => {
+    console.error("Error details:", {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+    });
 
-        let apiUrl = `http://localhost:3000/api/notifications`;
-        if (activeTab === "department" && departmentId) {
-          apiUrl = `http://localhost:3000/api/notifications/${departmentId}`;
-        }
+    setError(
+      `Error loading notifications: ${
+        error.response?.data?.message || error.message
+      }`
+    );
+    setLoading(false);
 
-        console.log(`📩 Gọi API: ${apiUrl}`);
-        const res = await axios.get(apiUrl, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        let filteredNotifications = res.data;
-
-        // Chỉ lấy thông báo của phòng ban khi chọn "Thông báo của phòng ban"
-        if (activeTab === "department") {
-          filteredNotifications = res.data.filter(
-            (notification) =>
-              notification.targetType === "Department" &&
-              notification.departmentId === departmentId
-          );
-        }
-        setNotifications(filteredNotifications);
-      } catch (error) {
-        console.error(
-          "❌ Lỗi khi lấy thông báo:",
-          error.response?.data || error.message
-        );
-      }
-    };
-
-    if (activeTab === "all" || (activeTab === "department" && departmentId)) {
-      fetchNotifications();
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("employeeId");
+      navigate("/");
     }
-  }, [token, departmentId, activeTab]);
+  };
+
+  const handleMarkAsRead = async (notificationId) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.patch(
+        `http://localhost:3000/api/notifications/${notificationId}/read`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // Update local state to mark notification as read
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((notification) =>
+          notification._id === notificationId
+            ? { ...notification, isRead: true }
+            : notification
+        )
+      );
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
+  if (loading) return <div className="loading">Loading notifications...</div>;
+
+  if (error) return <div className="error-message">{error}</div>;
 
   return (
-    <div className="notifications-page">
-      <div className="back-home-container">
-        <span className="back-home" onClick={() => navigate("/dashboard")}>
-          ⬅️ Back Home
-        </span>
-      </div>
-
-      <h1>THÔNG BÁO</h1>
-
-      {/* Thanh chọn loại thông báo */}
-      <div className="notification-tabs">
+    <div className="employee-notifications">
+      <div className="notifications-header">
+        <h1>Department Notifications</h1>
         <button
-          className={activeTab === "all" ? "active" : ""}
-          onClick={() => setActiveTab("all")}
+          className="back-to-dashboard"
+          onClick={() => navigate("/employee-dashboard")}
         >
-          📢 Thông báo Tổng
-        </button>
-        <button
-          className={activeTab === "department" ? "active" : ""}
-          onClick={() => setActiveTab("department")}
-          disabled={!departmentId}
-        >
-          🏢 Thông báo của {departmentName}
+          Back to Dashboard
         </button>
       </div>
 
-      {/* Danh sách thông báo */}
       {notifications.length === 0 ? (
-        <p>
-          {activeTab === "department"
-            ? `📭 ${departmentName} của bạn không có thông báo riêng.`
-            : "📭 Không có thông báo nào."}
-        </p>
+        <div className="no-notifications">
+          <p>No notifications at this time.</p>
+        </div>
       ) : (
-        notifications.map((notification) => (
-          <div key={notification._id} className="notification-card">
-            <h2>{notification.title}</h2>
-            <p>{notification.message}</p>
-            <small>
-              📅 {new Date(notification.createdAt).toLocaleString("vi-VN")}
-            </small>
-          </div>
-        ))
+        <div className="notifications-list">
+          {notifications.map((notification) => (
+            <div
+              key={notification._id}
+              className={`notification-item ${
+                notification.isRead ? "read" : "unread"
+              }`}
+            >
+              <div className="notification-content">
+                <h3>{notification.title}</h3>
+                <p>{notification.message}</p>
+                <div className="notification-meta">
+                  <span className="notification-date">
+                    {new Date(notification.createdAt).toLocaleString()}
+                  </span>
+                  {!notification.isRead && (
+                    <button
+                      className="mark-read-btn"
+                      onClick={() => handleMarkAsRead(notification._id)}
+                    >
+                      Mark as Read
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
 };
 
-export default Notifications;
+export default EmployeeNotifications;

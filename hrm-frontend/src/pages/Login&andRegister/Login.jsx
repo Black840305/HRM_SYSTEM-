@@ -186,13 +186,13 @@ const LoginAndRegister = () => {
                 <button type="submit" className="login-btn" disabled={loading}>
                   {loading ? "LOGGING IN..." : "LOGIN"}
                 </button>
-                <button
+                {/* <button
                   type="button"
                   className="register-btn"
                   onClick={() => setIsLogin(false)}
                 >
                   REGISTER
-                </button>
+                </button> */}
 
                 {message && (
                   <div className={`message ${messageType}`}>{message}</div>

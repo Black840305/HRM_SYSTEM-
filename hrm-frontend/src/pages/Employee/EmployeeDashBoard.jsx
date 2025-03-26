@@ -67,14 +67,13 @@ const EmployeeDashboard = () => {
         );
         setSalaryDetails(salaryRes.data.data); // Access .data property from the response
 
-        // Fetch notifications
-        // const notificationsRes = await axios.get(
-        //   `http://localhost:3000/api/notifications/${employeeId}`,
-        //   {
-        //     headers: { Authorization: `Bearer ${token}` },
-        //   }
-        // );
-        // setNotifications(notificationsRes.data);
+        const notificationsRes = await axios.get(
+          `http://localhost:3000/api/notifications/employee/${employeeId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setNotifications(notificationsRes.data.data || notificationsRes.data);
 
         setLoading(false);
       } catch (error) {
@@ -129,6 +128,12 @@ const EmployeeDashboard = () => {
         <div className="employee-sidebar">
           <h3>Personal Info</h3>
           <ul>
+            <li
+              className="active"
+              onClick={() => navigate("/employee-profile")}
+            >
+              Dashboard
+            </li>
             <li onClick={() => navigate("/employee-profile")}>View Profile</li>
             <li onClick={() => navigate("/employee/attendance")}>Attendance</li>
             <li onClick={() => navigate("/employee/salary")}>Salary</li>
@@ -199,18 +204,18 @@ const EmployeeDashboard = () => {
           )}
 
           <h2>Notifications</h2>
-          {/* {notifications.length === 0 ? (
+          {notifications.length === 0 ? (
             <p>No notifications at this time.</p>
           ) : (
             <ul>
               {notifications.map((notification) => (
                 <li key={notification._id}>
                   {notification.message} -{" "}
-                  {new Date(notification.date).toLocaleDateString()}
+                  {new Date(notification.createdAt).toLocaleDateString()}
                 </li>
               ))}
             </ul>
-          )} */}
+          )}
         </div>
       </div>
     </div>

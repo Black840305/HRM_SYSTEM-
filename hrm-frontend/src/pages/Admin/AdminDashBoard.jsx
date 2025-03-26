@@ -6,6 +6,7 @@ import "../../styles/AdminDashboard.css"; // Ensure you have this CSS file
 const AdminDashboard = () => {
   const [adminData, setAdminData] = useState(null);
   const [employees, setEmployees] = useState([]);
+  const [employeeSalaries, setEmployeeSalaries] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -68,6 +69,30 @@ const AdminDashboard = () => {
         setEmployees(filteredEmployees);
         setFilteredEmployees(filteredEmployees); // Initialize filtered list
 
+        // Fetch the latest salary information for all employees
+        const salaryData = {};
+        for (const emp of filteredEmployees) {
+          try {
+            const payrollRes = await axios.get(
+              `http://localhost:3000/api/payroll/employee/${emp._id}/latest`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+
+            if (payrollRes.data && payrollRes.data.data) {
+              salaryData[emp._id] = payrollRes.data.data.baseSalary;
+            }
+          } catch (err) {
+            console.error(
+              `Error fetching salary for employee ${emp._id}:`,
+              err
+            );
+            // If there's an error, we'll just leave this employee without salary data
+          }
+        }
+
+        setEmployeeSalaries(salaryData);
         setLoading(false);
       } catch (error) {
         handleError(error);
@@ -76,6 +101,7 @@ const AdminDashboard = () => {
 
     fetchAdminData();
   }, [navigate]);
+
   const handleError = (error) => {
     console.error("Error details:", {
       message: error.message,
@@ -100,7 +126,6 @@ const AdminDashboard = () => {
     navigate("/");
   };
 
-  // In AdminDashboard.js
   const handleViewEmployee = (employeeId) => {
     const selectedEmployee = employees.find((emp) => emp._id == employeeId);
     navigate(`/admin/employee/${employeeId}`, {
@@ -152,6 +177,11 @@ const AdminDashboard = () => {
         .includes(value.toLowerCase())
     );
     setFilteredEmployees(filtered);
+  };
+
+  // Function to get the latest salary for an employee
+  const getLatestSalary = (employeeId) => {
+    return employeeSalaries[employeeId] || 0;
   };
 
   if (loading) return <div className="loading">Loading data...</div>;
@@ -239,32 +269,29 @@ const AdminDashboard = () => {
             <table>
               <thead>
                 <tr>
-                  {/* <th>ID</th> */}
                   <th>Name</th>
-                  {/* <th>Date of Birth</th> */}
                   <th>Gender</th>
-                  {/* <th>Address</th>
-                  <th>Phone</th> */}
                   <th>Email</th>
                   <th>Department</th>
                   <th>Position</th>
-                  <th>Salary</th>
+                  <th>Base Salary</th>
                   <th>Start Date</th>
-                  {/* <th>Avatar</th> */}
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredEmployees.map((emp) => (
                   <tr key={emp._id}>
-                    {/* <td>{emp._id.substring(0, 6)}...</td> */}
                     <td>{emp.name}</td>
                     <td>{emp.gender}</td>
                     <td>{emp.email}</td>
                     <td>{emp.department}</td>
                     <td>{emp.position || "Not Updated"}</td>
                     <td>
-                      {emp.salary?.toLocaleString("vi-VN") || "Not Updated"} VND
+                      {getLatestSalary(emp._id)
+                        ? getLatestSalary(emp._id).toLocaleString("vi-VN")
+                        : "Not Updated"}{" "}
+                      VND
                     </td>
                     <td>{emp.startDate}</td>
                     <td className="action-buttons">

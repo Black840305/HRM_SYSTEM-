@@ -1,5 +1,6 @@
 const Attendance = require("../models/attendanceModel");
 const Employee = require("../models/employeeModel");
+const moment = require("moment");
 exports.getAttendancesByEmployee = async (req, res) => {
   try {
     const employeeId = req.params.employeeId;
@@ -429,16 +430,13 @@ exports.getAttendancesByEmployee = async (req, res) => {
     const employeeId = req.params.employeeId;
     const { limit = 10, page = 1, month, year } = req.query;
 
-    // Build the filter
     const filter = { employee: employeeId };
 
-    // Add date filtering for month and year if provided
     if (month && year) {
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0, 23, 59, 59, 999);
       filter.date = { $gte: startDate, $lte: endDate };
     } else {
-      // If no month/year specified, default to current month
       const today = new Date();
       const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
       const endOfMonth = new Date(
@@ -453,59 +451,25 @@ exports.getAttendancesByEmployee = async (req, res) => {
       filter.date = { $gte: startOfMonth, $lte: endOfMonth };
     }
 
-    console.log("Fetching attendance for employee:", employeeId);
-    console.log("Filter criteria:", filter);
-
-    // Count total matching records
     const total = await Attendance.countDocuments(filter);
-
-    // Get the records with pagination và POPULATE ĐẦY ĐỦ
     const attendances = await Attendance.find(filter)
-      .populate({
-        path: "employee",
-        select: "name employeeId department position",
-        populate: {
-          path: "department",
-          select: "name",
-        },
-      })
-      .sort({ date: -1, createdAt: -1 })
+      .populate("employee", "name employeeId department position")
+      .sort({ date: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
 
-    // Process records to add calculated fields
     const processedAttendances = attendances.map((record) => {
       const attendance = record.toObject();
-
-      // Add formatted date
       attendance.formattedDate = new Date(attendance.date).toLocaleDateString();
 
-      // Calculate working hours if applicable
       if (attendance.checkInTime && attendance.checkOutTime) {
         const checkIn = new Date(attendance.checkInTime);
         const checkOut = new Date(attendance.checkOutTime);
         const diffMs = checkOut - checkIn;
         const hours = Math.floor(diffMs / (1000 * 60 * 60));
         const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
         attendance.workingHours = `${hours}h ${minutes}m`;
       }
-
-      // Generate remarks based on attendance status
-      let remarks = "";
-      if (attendance.isLate) remarks += "Đi muộn. ";
-      if (attendance.isEarlyDeparture) remarks += "Về sớm. ";
-      if (attendance.isLeave)
-        remarks += `Nghỉ phép ${attendance.leaveType || ""}: ${
-          attendance.leaveReason || "Không có lý do"
-        }. `;
-      if (attendance.overtimeHours > 0)
-        remarks += `Làm thêm: ${attendance.overtimeHours}h (${
-          attendance.overtimeReason || "Không có lý do"
-        }). `;
-      if (attendance.note) remarks += attendance.note;
-
-      attendance.remarks = remarks.trim() || "Chấm công bình thường";
 
       return attendance;
     });
@@ -521,14 +485,8 @@ exports.getAttendancesByEmployee = async (req, res) => {
     });
   } catch (err) {
     console.error("Error in getAttendancesByEmployee:", err);
-
-    // Handle invalid ID error
-    if (err.kind === "ObjectId") {
-      return res.status(400).json({ message: "ID nhân viên không hợp lệ" });
-    }
-
     res.status(500).json({
-      message: "Lỗi server khi lấy dữ liệu chấm công của nhân viên",
+      message: "Server error while fetching employee attendance data",
       error: err.message,
     });
   }
@@ -923,7 +881,7 @@ exports.updateAttendance = async (req, res) => {
       attendance._id
     ).populate({
       path: "employee",
-      select: "name employeeCode department position",
+      select: "name department position",
       populate: {
         path: "department",
         select: "name",
@@ -1022,102 +980,147 @@ exports.getAttendancesByEmployee = async (req, res) => {
 exports.checkIn = async (req, res) => {
   try {
     const { employeeId } = req.body;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = moment().startOf("day");
 
-    // Check if employee has already checked in today
-    let attendance = await Attendance.findOne({
+    // Check if employee exists
+    const employee = await Employee.findById(employeeId);
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee not found",
+      });
+    }
+
+    // Check if already checked in today
+    const existingAttendance = await Attendance.findOne({
       employee: employeeId,
-      date: today,
+      date: {
+        $gte: today.toDate(),
+        $lt: moment(today).add(1, "day").toDate(),
+      },
     });
 
-    const checkInTime = new Date();
-
-    // Check if late (assuming work starts at 8:00)
-    const workStartTime = new Date(today);
-    workStartTime.setHours(8, 0, 0, 0);
-    const isLate = checkInTime > workStartTime;
-
-    if (!attendance) {
-      // If no attendance record for today, create a new one
-      attendance = new Attendance({
-        employee: employeeId,
-        date: today,
-        checkInTime,
-        isLate,
-        status: "pending",
+    if (existingAttendance && existingAttendance.checkInTime) {
+      return res.status(400).json({
+        success: false,
+        message: "Already checked in today",
       });
-    } else {
-      // If record exists, update check-in information
-      attendance.checkInTime = checkInTime;
-      attendance.isLate = isLate;
+    }
+
+    // Create or update attendance
+    const attendance =
+      existingAttendance ||
+      new Attendance({
+        employee: employeeId,
+        date: new Date(),
+        checkInTime: new Date(),
+        status: "Present",
+      });
+
+    if (!existingAttendance) {
+      attendance.checkInTime = new Date();
     }
 
     await attendance.save();
 
-    res.json({
-      message: "Check-in successful",
+    res.status(200).json({
+      success: true,
       data: attendance,
     });
-  } catch (err) {
-    console.error("Error in checkIn:", err);
-    res
-      .status(500)
-      .json({ message: "Server error during check-in", error: err.message });
+  } catch (error) {
+    console.error("Check-in error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error during check-in",
+    });
   }
 };
 
 exports.checkOut = async (req, res) => {
   try {
     const { employeeId } = req.body;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = moment().startOf("day");
 
-    // Find employee's attendance record for today
+    // Find today's attendance record
     const attendance = await Attendance.findOne({
       employee: employeeId,
-      date: today,
+      date: {
+        $gte: today.toDate(),
+        $lt: moment(today).add(1, "day").toDate(),
+      },
     });
 
+    // Validate attendance record
     if (!attendance) {
-      return res
-        .status(404)
-        .json({ message: "No check-in record found for today" });
+      return res.status(400).json({
+        success: false,
+        message: "No check-in record found for today",
+      });
     }
 
-    const checkOutTime = new Date();
-
-    // Check if early departure (assuming work ends at 17:00)
-    const workEndTime = new Date(today);
-    workEndTime.setHours(17, 0, 0, 0);
-    const isEarlyDeparture = checkOutTime < workEndTime;
-
-    // Update check-out information
-    attendance.checkOutTime = checkOutTime;
-    attendance.isEarlyDeparture = isEarlyDeparture;
-
-    // Calculate overtime hours if applicable
-    if (checkOutTime > workEndTime) {
-      const overtimeMinutes = (checkOutTime - workEndTime) / (1000 * 60);
-      attendance.overtimeHours = Math.round((overtimeMinutes / 60) * 100) / 100; // Round to 2 decimal places
-      attendance.overtimeStart = "17:00";
-      attendance.overtimeEnd = `${checkOutTime.getHours()}:${checkOutTime
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}`;
+    // Check if already checked out
+    if (attendance.checkOutTime) {
+      return res.status(400).json({
+        success: false,
+        message: "Already checked out today",
+      });
     }
+
+    // Validate check-in happened
+    if (!attendance.checkInTime) {
+      return res.status(400).json({
+        success: false,
+        message: "Must check in before checking out",
+      });
+    }
+
+    // Update check-out time
+    attendance.checkOutTime = new Date();
+    attendance.status = "Completed";
 
     await attendance.save();
 
-    res.json({
-      message: "Check-out successful",
+    res.status(200).json({
+      success: true,
       data: attendance,
     });
-  } catch (err) {
-    console.error("Error in checkOut:", err);
-    res
-      .status(500)
-      .json({ message: "Server error during check-out", error: err.message });
+  } catch (error) {
+    console.error("Check-out error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error during check-out",
+    });
+  }
+};
+
+exports.getEmployeeDailyAttendance = async (req, res) => {
+  try {
+    const { employeeId, date } = req.params;
+    const attendance = await Attendance.findOne({
+      employee: employeeId,
+      date: {
+        $gte: moment(date).startOf("day").toDate(),
+        $lt: moment(date).add(1, "day").startOf("day").toDate(),
+      },
+    });
+
+    if (!attendance) {
+      return res.status(404).json({
+        success: false,
+        message: "No attendance record found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: attendance,
+    });
+  } catch (error) {
+    console.error("Get daily attendance error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error retrieving attendance",
+    });
   }
 };
 
@@ -1238,5 +1241,34 @@ exports.getMonthlyAttendance = async (req, res) => {
       message: "Server error while fetching monthly attendance data",
       error: err.message,
     });
+  }
+};
+
+exports.getAttendanceByEmployeeAndDate = async (req, res) => {
+  try {
+    const { employeeId, date } = req.params;
+
+    // Validate input
+    if (!employeeId || !date) {
+      return res.status(400).json({ message: "Invalid parameters" });
+    }
+
+    // Find attendance record
+    const attendance = await Attendance.findOne({
+      employeeId,
+      date: new Date(date),
+    });
+
+    if (!attendance) {
+      return res.status(404).json({ message: "No attendance record found" });
+    }
+
+    res.json({
+      success: true,
+      data: attendance,
+    });
+  } catch (error) {
+    console.error("Attendance Retrieval Error:", error);
+    res.status(500).json({ message: "Server error retrieving attendance" });
   }
 };
