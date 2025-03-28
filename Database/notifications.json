@@ -1,92 +1,86 @@
-[
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c952"
-    },
-    "title": "Phát Triển Dự Án web quản lý nhân viên",
-    "message": "Cuộc họp phòng Kỹ thuật sẽ diễn ra vào lúc 15:30 ngày 20/03/2024 tại phòng họp B.",
-    "recipients": [
-      {
-        "$oid": "65f0a1b1c2d3e4f5a6b7c8f2"
-      }
-    ],
-    "createdAt": {
-      "$date": "2024-03-15T10:05:00.000Z"
-    },
-    "updatedAt": {
-      "$date": "2024-03-15T10:05:00.000Z"
-    },
-    "department": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8da"
-    }
+[{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c953"
   },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c953"
-    },
-    "title": "Marketing Kỷ Nguyên 4.0",
-    "message": "Cuộc họp phòng Kinh doanh sẽ diễn ra vào lúc 16:30 ngày 20/03/2024 tại phòng họp C.",
-    "recipients": [
-      {
-        "$oid": "65f0a1b1c2d3e4f5a6b7c8f3"
-      }
-    ],
-    "createdAt": {
-      "$date": "2024-03-15T10:10:00.000Z"
-    },
-    "updatedAt": {
-      "$date": "2024-03-15T10:10:00.000Z"
-    },
-    "department": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8db"
+  "title": "Marketing Kỷ Nguyên 4.0",
+  "message": "Cuộc họp phòng Kinh doanh sẽ diễn ra vào lúc 16:30 ngày 20/03/2024 tại phòng họp C.",
+  "recipients": [
+    {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8f3"
     }
+  ],
+  "createdAt": {
+    "$date": "2024-03-15T10:10:00.000Z"
   },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c954"
-    },
-    "title": "Thông báo nghỉ lễ 30/4 và 1/5",
-    "message": "Công ty sẽ nghỉ lễ vào các ngày 30/4 và 1/5/2024. Nhân viên vui lòng sắp xếp công việc để hoàn thành trước kỳ nghỉ lễ.",
-    "recipients": [
-      {
-        "$oid": "67d2587f9fb0ac9dca216273"
-      },
-      {
-        "$oid": "67d59ba83eb680c4d809f180"
-      },
-      {
-        "$oid": "65f0a1b1c2d3e4f5a6b7c8f3"
-      }
-    ],
-    "createdAt": {
-      "$date": "2024-03-16T09:00:00.000Z"
-    },
-    "updatedAt": {
-      "$date": "2024-03-16T09:00:00.000Z"
-    }
+  "updatedAt": {
+    "$date": "2024-03-15T10:10:00.000Z"
   },
-  {
-    "_id": {
-      "$oid": "67da617d3695839c72272621"
-    },
-    "title": "Đăng Tin Tuyển Dụng Nhân Viên",
-    "message": "Cuộc họp phòng Nhân sự sẽ diễn ra vào lúc 14:00 ngày 20/03/2024 tại phòng họp A.",
-    "recipients": [
-      {
-        "$oid": "67d2587f9fb0ac9dca216273"
-      },
-      {
-        "$oid": "67d59ba83eb680c4d809f180"
-      }
-    ],
-    "createdAt": {
-      "$date": "2024-03-15T10:00:00.000Z"
-    },
-    "updatedAt": {
-      "$date": "2024-03-15T10:00:00.000Z"
-    },
-    "department": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8d9"
-    }
+  "department": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8db"
   }
-]
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c954"
+  },
+  "title": "Thông báo nghỉ lễ 30/4 và 1/5",
+  "message": "Công ty sẽ nghỉ lễ vào các ngày 30/4 và 1/5/2024. Nhân viên vui lòng sắp xếp công việc để hoàn thành trước kỳ nghỉ lễ.",
+  "recipients": [
+    {
+      "$oid": "67d2587f9fb0ac9dca216273"
+    },
+    {
+      "$oid": "67d59ba83eb680c4d809f180"
+    },
+    {
+      "$oid": "65f0a1b1c2d3e4f5a6b7c8f3"
+    }
+  ],
+  "createdAt": {
+    "$date": "2024-03-16T09:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2024-03-16T09:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67da617d3695839c72272621"
+  },
+  "title": "Đăng Tin Tuyển Dụng Nhân Viên",
+  "message": "Cuộc họp phòng Nhân sự sẽ diễn ra vào lúc 14:00 ngày 20/03/2024 tại phòng họp A.",
+  "recipients": [
+    {
+      "$oid": "67d2587f9fb0ac9dca216273"
+    },
+    {
+      "$oid": "67d59ba83eb680c4d809f180"
+    }
+  ],
+  "createdAt": {
+    "$date": "2024-03-15T10:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2024-03-15T10:00:00.000Z"
+  },
+  "department": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8d9"
+  }
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c952"
+  },
+  "title": "Thông báo họp phòng Kỹ thuật",
+  "message": "Cuộc họp phòng Kỹ thuật sẽ diễn ra vào lúc 15:30 ngày 20/03/2024 tại phòng họp B.",
+  "targetType": "Department",
+  "createdAt": {
+    "$date": "2024-03-15T10:05:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2024-03-15T10:05:00.000Z"
+  },
+  "department": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8da"
+  }
+}]

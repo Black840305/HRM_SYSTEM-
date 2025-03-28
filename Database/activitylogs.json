@@ -1,101 +1,99 @@
-[
-  {
-    "_id": {
-      "$oid": "67d25a3b9fb0ac9dca21629d"
-    },
-    "user": {
-      "$oid": "67d2587f9fb0ac9dca216273"
-    },
-    "action": "Created a new employee record"
+[{
+  "_id": {
+    "$oid": "67d25a3b9fb0ac9dca21629d"
   },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c941"
-    },
-    "user": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8e1"
-    },
-    "action": "Đăng nhập hệ thống",
-    "timestamp": {
-      "$date": "2024-03-15T08:00:00.000Z"
-    },
-    "createdAt": {
-      "$date": "2024-03-15T08:00:00.000Z"
-    },
-    "updatedAt": {
-      "$date": "2024-03-15T08:00:00.000Z"
-    }
+  "user": {
+    "$oid": "67d40af7af5f1ec4f2be2307"
   },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c942"
-    },
-    "user": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8e1"
-    },
-    "action": "Phê duyệt đơn nghỉ phép của Trần Thị B",
-    "timestamp": {
-      "$date": "2024-03-15T09:15:00.000Z"
-    },
-    "createdAt": {
-      "$date": "2024-03-15T09:15:00.000Z"
-    },
-    "updatedAt": {
-      "$date": "2024-03-15T09:15:00.000Z"
-    }
+  "action": "Created a new employee record"
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c941"
   },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c943"
-    },
-    "user": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8e2"
-    },
-    "action": "Đăng nhập hệ thống",
-    "timestamp": {
-      "$date": "2024-03-15T08:05:00.000Z"
-    },
-    "createdAt": {
-      "$date": "2024-03-15T08:05:00.000Z"
-    },
-    "updatedAt": {
-      "$date": "2024-03-15T08:05:00.000Z"
-    }
+  "user": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8e1"
   },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c944"
-    },
-    "user": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8e2"
-    },
-    "action": "Cập nhật thông tin cá nhân",
-    "timestamp": {
-      "$date": "2024-03-15T10:30:00.000Z"
-    },
-    "createdAt": {
-      "$date": "2024-03-15T10:30:00.000Z"
-    },
-    "updatedAt": {
-      "$date": "2024-03-15T10:30:00.000Z"
-    }
+  "action": "Đăng nhập hệ thống",
+  "timestamp": {
+    "$date": "2024-03-15T08:00:00.000Z"
   },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c945"
-    },
-    "user": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8e3"
-    },
-    "action": "Gửi đơn nghỉ phép",
-    "timestamp": {
-      "$date": "2024-03-15T08:30:00.000Z"
-    },
-    "createdAt": {
-      "$date": "2024-03-15T08:30:00.000Z"
-    },
-    "updatedAt": {
-      "$date": "2024-03-15T08:30:00.000Z"
-    }
+  "createdAt": {
+    "$date": "2024-03-15T08:00:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2024-03-15T08:00:00.000Z"
   }
-]
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c942"
+  },
+  "user": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8e1"
+  },
+  "action": "Phê duyệt đơn nghỉ phép của Trần Thị B",
+  "timestamp": {
+    "$date": "2024-03-15T09:15:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2024-03-15T09:15:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2024-03-15T09:15:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c943"
+  },
+  "user": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8e2"
+  },
+  "action": "Đăng nhập hệ thống",
+  "timestamp": {
+    "$date": "2024-03-15T08:05:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2024-03-15T08:05:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2024-03-15T08:05:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c944"
+  },
+  "user": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8e2"
+  },
+  "action": "Cập nhật thông tin cá nhân",
+  "timestamp": {
+    "$date": "2024-03-15T10:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2024-03-15T10:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2024-03-15T10:30:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c945"
+  },
+  "user": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8e3"
+  },
+  "action": "Gửi đơn nghỉ phép",
+  "timestamp": {
+    "$date": "2024-03-15T08:30:00.000Z"
+  },
+  "createdAt": {
+    "$date": "2024-03-15T08:30:00.000Z"
+  },
+  "updatedAt": {
+    "$date": "2024-03-15T08:30:00.000Z"
+  }
+}]

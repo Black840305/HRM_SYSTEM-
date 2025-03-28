@@ -1,68 +1,120 @@
-[
-  {
-    "_id": {
-      "$oid": "67d40af7af5f1ec4f2be2307"
-    },
-    "username": "KHANH",
-    "email": "admin@gmail.com",
-    "password": "123",
-    "role": "admin",
-    "employeeId": {
-      "$oid": "67d40b9eaf5f1ec4f2be230c"
-    }
+[{
+  "_id": {
+    "$oid": "67d40af7af5f1ec4f2be2307"
   },
-  {
-    "_id": {
-      "$oid": "67d2584e9fb0ac9dca216270"
-    },
-    "username": "john doe",
-    "email": "JohnDoe@gmail.com",
-    "password": "123",
-    "role": "employee",
-    "employeeId": {
-      "$oid": "67d2587f9fb0ac9dca216273"
-    }
-  },
-  {
-    "_id": {
-      "$oid": "67d59b4f3eb680c4d809f17c"
-    },
-    "username": "Khanh Hoa",
-    "email": "Hoa123@gmail.com",
-    "password": "123",
-    "role": "employee",
-    "employeeId": {
-      "$oid": "67d59ba83eb680c4d809f180"
-    }
-  },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8e1"
-    },
-    "email": "admin@example.com",
-    "password": "$2a$10$rIU6L4.1iE5XEB/EgZ8Qp.TqMkHNOW3I8HzVw.CYmxRLHQOiDCOPC",
-    "role": "admin"
-  },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8e2"
-    },
-    "email": "nguyen.van.a@example.com",
-    "password": "$2a$10$rIU6L4.1iE5XEB/EgZ8Qp.TqMkHNOW3I8HzVw.CYmxRLHQOiDCOPC",
-    "role": "employee",
-    "employeeId": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8f1"
-    }
-  },
-  {
-    "_id": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8e3"
-    },
-    "email": "tran.thi.b@example.com",
-    "password": "$2a$10$rIU6L4.1iE5XEB/EgZ8Qp.TqMkHNOW3I8HzVw.CYmxRLHQOiDCOPC",
-    "role": "employee",
-    "employeeId": {
-      "$oid": "65f0a1b1c2d3e4f5a6b7c8f2"
-    }
+  "username": "KHANH",
+  "email": "admin@gmail.com",
+  "password": "$2b$10$8FAQlrTON8PqmXuLM8Hn8OsKvy7dKFIBhV/Xq2G4d8xWfgtgszvM2",
+  "role": "admin",
+  "employeeId": {
+    "$oid": "67d40b9eaf5f1ec4f2be230c"
   }
-]
+},
+{
+  "_id": {
+    "$oid": "67d2584e9fb0ac9dca216270"
+  },
+  "username": "john doe",
+  "email": "JohnDoe@gmail.com",
+  "password": "$2b$10$kNTYSjq1VQ4rd48iXL1ICObgW2OqOTr/ekvQoEjayzl0XCy6VicKW",
+  "role": "employee",
+  "employeeId": {
+    "$oid": "67d2587f9fb0ac9dca216273"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d59b4f3eb680c4d809f17c"
+  },
+  "username": "Khanh Hoa",
+  "email": "Hoa123@gmail.com",
+  "password": "123",
+  "role": "employee",
+  "employeeId": {
+    "$oid": "67d59ba83eb680c4d809f180"
+  }
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8e1"
+  },
+  "email": "admin@example.com",
+  "password": "$2a$10$rIU6L4.1iE5XEB/EgZ8Qp.TqMkHNOW3I8HzVw.CYmxRLHQOiDCOPC",
+  "role": "admin"
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8e2"
+  },
+  "email": "nguyen.van.a@example.com",
+  "password": "$2a$10$rIU6L4.1iE5XEB/EgZ8Qp.TqMkHNOW3I8HzVw.CYmxRLHQOiDCOPC",
+  "role": "employee",
+  "employeeId": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8f1"
+  }
+},
+{
+  "_id": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8e3"
+  },
+  "email": "tran.thi.b@example.com",
+  "password": "$2a$10$rIU6L4.1iE5XEB/EgZ8Qp.TqMkHNOW3I8HzVw.CYmxRLHQOiDCOPC",
+  "role": "employee",
+  "employeeId": {
+    "$oid": "65f0a1b1c2d3e4f5a6b7c8f2"
+  }
+},
+{
+  "_id": {
+    "$oid": "67d95474cc0ef8533e8cf9a5"
+  },
+  "email": "test123456@gmail.com",
+  "password": "$2b$10$4u7jyjGtYKTXfQQxqcmR3.HJfuUiPjM.Lv3qGrSiscCxuJT8Nt4Bu",
+  "role": "employee",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67d955b4a37c944513464642"
+  },
+  "email": "test12345@gmail.com",
+  "password": "$2b$10$AfxQ1YAesK.SIe30EQ7ZTeYRnsDmxQR7btGGndHBT.kR7z24qj5yy",
+  "role": "employee",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67d9590fd75fadd7116f7c1e"
+  },
+  "email": "test45@gmail.com",
+  "password": "$2b$10$YLZrat0c04afA6gk1wdlCOFJwrUrlgfMQcI8Gso23kZlRPXhyugV6",
+  "role": "employee",
+  "__v": 0,
+  "employeeId": {
+    "$oid": "67d9590fd75fadd7116f7c21"
+  }
+},
+{
+  "_id": {
+    "$oid": "67e0a969764473281e2d3f1e"
+  },
+  "email": "Kahn203@gmail.com",
+  "password": "$2b$10$l96pLpkmNw0GbEoVTgJ2UeAE5oq/Y4EHt6iljIxiWmNO9KGSiR3Ui",
+  "role": "employee",
+  "__v": 0,
+  "employeeId": {
+    "$oid": "67e0a969764473281e2d3f21"
+  }
+},
+{
+  "_id": {
+    "$oid": "67e4c9ded57d51b9e329c6eb"
+  },
+  "email": "Kahn208@gmail.com",
+  "password": "$2b$10$3o6py5I7P2VuIZC8CZnmMOQN89V0C74dQcRC8wNN4RsAm9uLL4qzC",
+  "role": "employee",
+  "__v": 0,
+  "employeeId": {
+    "$oid": "67e4c9ded57d51b9e329c6ee"
+  }
+}]
